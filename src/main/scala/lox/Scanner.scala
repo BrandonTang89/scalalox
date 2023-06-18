@@ -2,7 +2,6 @@ package lox
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.immutable.HashMap
 import TokenType.*
-import jdk.nashorn.internal.ir.annotations.Immutable
 class Scanner(val source: String) {
   val tokens: ArrayBuffer[Token] = ArrayBuffer[Token]()
 
@@ -32,10 +31,9 @@ class Scanner(val source: String) {
       case '<' => addToken(if curMatch('=') then LESS_EQUAL else LESS)
       case '>' => addToken(if curMatch('=') then GREATER_EQUAL else GREATER)
 
-      case '/' =>
-        if curMatch('/') then
-            while peek() != '\n' && !isAtEnd do advance()
-        else addToken(SLASH)
+      case '/' if curMatch('/') => while peek() != '\n' && !isAtEnd do advance()
+      case '/' if curMatch('*') => multiComment()
+      case '/' => addToken(SLASH)
 
       case ' ' | '\r' | '\t' => // ignore whitespace
       case '\n' => line += 1
@@ -73,6 +71,15 @@ class Scanner(val source: String) {
       current += 1
       true
     else false
+  }
+  private def multiComment(): Unit = {
+    while !isAtEnd && !(peek() == '*' && peekNext() == '/') do
+      if peek() == '\n' then line += 1
+      advance()
+    if isAtEnd then Lox.error(line, "Unterminated Multi Line Comment.")
+    else
+      advance() // the *
+      advance() // the /
   }
 
   // Generic Methods
