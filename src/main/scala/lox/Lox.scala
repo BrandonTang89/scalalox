@@ -18,7 +18,8 @@ object Lox {
     val inputFile = Source.fromFile(path)
     run(inputFile.getLines().mkString)
     inputFile.close()
-    if hadError then System.exit(64)
+    if hadError then System.exit(65)
+    if hadRuntimeError then System.exit(70)
   }
 
   private def runPrompt(): Unit = {
@@ -32,7 +33,9 @@ object Lox {
     }
   }
 
+  private val interpreter = new Interpreter()
   private var hadError: Boolean = false
+  private var hadRuntimeError: Boolean = false
   private def run(source: String): Unit = {
     val scanner: Scanner = Scanner(source)
     val tokens: ArrayBuffer[Token] = scanner.scanTokens()
@@ -40,9 +43,13 @@ object Lox {
     val parser: Parser = Parser(tokens)
     val expression: Expr = parser.parse()
 
-    if !hadError then println(expression.toString)
+    if !hadError then interpreter.interpret(expression)
   }
 
+  def runtimeError(error: RuntimeError): Unit = {
+    System.err.println(error.getMessage + "\n[line " + error.token.line + "]")
+    hadRuntimeError = true
+  }
   def error(line: Int, message: String): Unit = {
     report(line, "", message)
   }

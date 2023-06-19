@@ -47,7 +47,7 @@ class Parser(val tokens: ArrayBuffer[Token]) {
    *  The comma operator is left associative so
    *   a = 1, b = 2, c = 3 is ((a = 1, b = 2), c = 3) returning 3
    */
-  private def expression(): Expr = {
+  def expression(): Expr = {
     var expr: Expr = ternary()
     while matches(COMMA) do
       val operator: Token = previous()
@@ -187,10 +187,8 @@ class Parser(val tokens: ArrayBuffer[Token]) {
     // post: Either at end || peek() is a one of the key words || just past a ;
   }
 
-
-
 }
 
 object Parser{
-  private class ParseError() extends RuntimeException
+  class ParseError() extends RuntimeException
 }

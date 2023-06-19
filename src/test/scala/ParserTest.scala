@@ -1,7 +1,7 @@
 import lox.TokenType.{EOF, LEFT_PAREN, MINUS, NUMBER, RIGHT_PAREN, STAR}
 import lox.{Parser, Scanner, Token}
-import org.scalatest.funsuite.AnyFunSuite
 
+import org.scalatest.funsuite.AnyFunSuite
 import scala.collection.mutable.ArrayBuffer
 
 class ParserTest extends AnyFunSuite {
@@ -28,7 +28,9 @@ class ParserTest extends AnyFunSuite {
       //Token(RIGHT_PAREN, ")", null, 1),
       Token(EOF, "", null, 1)
     )
-    assert(Parser(tokens).parse() == null)
+    assertThrows[lox.Parser.ParseError] {
+      Parser(tokens).expression()
+    }
   }
 
   test("Parser Test Basic Fail 2") {
@@ -41,7 +43,9 @@ class ParserTest extends AnyFunSuite {
       Token(RIGHT_PAREN, ")", null, 1),
       Token(EOF, "", null, 1)
     )
-    assert(Parser(tokens).parse() == null)
+    assertThrows[lox.Parser.ParseError]{
+      Parser(tokens).expression()
+    }
   }
 
   test("Scan-Parse Integration Test 1"){
