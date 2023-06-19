@@ -5,10 +5,10 @@ import scala.io.StdIn.readLine
 import scala.collection.mutable.ArrayBuffer
 object Lox {
   def main(args: Array[String]): Unit = {
-    if (args.length > 1) then
+    if args.length > 1 then
       println("Usage: scalalox [script]")
       System.exit(64)
-    else if (args.length == 1) then
+    else if args.length == 1 then
       runFile(args(0))
     else
       runPrompt()
@@ -37,15 +37,21 @@ object Lox {
     val scanner: Scanner = Scanner(source)
     val tokens: ArrayBuffer[Token] = scanner.scanTokens()
 
-    for (token <- tokens) do
-      println(token)
+    val parser: Parser = Parser(tokens)
+    val expression: Expr = parser.parse()
+
+    if !hadError then println(expression.toString)
   }
 
   def error(line: Int, message: String): Unit = {
     report(line, "", message)
   }
+  def error(token: Token, message: String): Unit = {
+    if token.tokenType == TokenType.EOF then report(token.line, " at end", message)
+    else report(token.line, " at '" + token.lexeme + "'", message)
+  }
   private def report(line: Int, where: String, message: String): Unit = {
-    System.err.println("Line [" + line.toString + "] Error " + where + ": " + message)
+    System.err.println("Line [" + line.toString + "] Error" + where + ": " + message)
     hadError = true
   }
 

@@ -30,6 +30,8 @@ class Scanner(val source: String) {
       case '=' => addToken(if curMatch('=') then EQUAL_EQUAL else EQUAL)
       case '<' => addToken(if curMatch('=') then LESS_EQUAL else LESS)
       case '>' => addToken(if curMatch('=') then GREATER_EQUAL else GREATER)
+      case '?' => addToken(QUESTION_MARK)
+      case ':' => addToken(COLON)
 
       case '/' if curMatch('/') => while peek() != '\n' && !isAtEnd do advance()
       case '/' if curMatch('*') => multiComment()
