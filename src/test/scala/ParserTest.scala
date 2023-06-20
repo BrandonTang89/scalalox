@@ -15,7 +15,7 @@ class ParserTest extends AnyFunSuite {
       Token(RIGHT_PAREN, ")", null, 1),
       Token(EOF, "", null, 1)
     )
-    assert(Parser(tokens).parse().toString() == "(* (- 123) (group 45.67))")
+    assert(Parser(tokens).expression().toString() == "(* (- 123) (group 45.67))")
   }
 
   test("Parser Test Basic Fail 1") {
@@ -51,30 +51,36 @@ class ParserTest extends AnyFunSuite {
   test("Scan-Parse Integration Test 1"){
     val text: String = "\"hello world\" + \"is cool\""
     val parser: Parser = Parser(Scanner(text).scanTokens())
-    assert(parser.parse().toString == "(+ hello world is cool)")
+    assert(parser.expression().toString == "(+ hello world is cool)")
   }
 
   test("Scan-Parse Integration Test 2") {
     val text: String = "(1+2) * 3 / (4+5) + 9"
     val parser: Parser = Parser(Scanner(text).scanTokens())
-    assert(parser.parse().toString == "(+ (/ (* (group (+ 1.0 2.0)) 3.0) (group (+ 4.0 5.0))) 9.0)")
+    assert(parser.expression().toString == "(+ (/ (* (group (+ 1.0 2.0)) 3.0) (group (+ 4.0 5.0))) 9.0)")
   }
 
   test("Scan-Parse Integration Test 3") {
     val text: String = "(1+2) * 3, (4+5) + 9"
     val parser: Parser = Parser(Scanner(text).scanTokens())
-    assert(parser.parse().toString == "(, (* (group (+ 1.0 2.0)) 3.0) (+ (group (+ 4.0 5.0)) 9.0))")
+    assert(parser.expression().toString == "(, (* (group (+ 1.0 2.0)) 3.0) (+ (group (+ 4.0 5.0)) 9.0))")
   }
 
   test("Scan-Parser Integration Test 4: Ternary Operator"){
     val text: String = "2 > 3 ? 5+10*4 < 6 ? 7 : 8 : 9 < 10 ? 11 : 12"
     val parser: Parser = Parser(Scanner(text).scanTokens())
-    assert(parser.parse().toString == "(?: (> 2.0 3.0) (?: (< (+ 5.0 (* 10.0 4.0)) 6.0) 7.0 8.0) (?: (< 9.0 10.0) 11.0 12.0))")
+    assert(parser.expression().toString == "(?: (> 2.0 3.0) (?: (< (+ 5.0 (* 10.0 4.0)) 6.0) 7.0 8.0) (?: (< 9.0 10.0) 11.0 12.0))")
   }
 
   test("Scan-Parser Integration Test 5: Ternary Operator") {
     val text: String = "(2 < 3 ? true : false) ? 5 < 6 ? 7 : 8 : 9 < 10 ? 11 : 12"
     val parser: Parser = Parser(Scanner(text).scanTokens())
-    assert(parser.parse().toString == "(?: (group (?: (< 2.0 3.0) true false)) (?: (< 5.0 6.0) 7.0 8.0) (?: (< 9.0 10.0) 11.0 12.0))")
+    assert(parser.expression().toString == "(?: (group (?: (< 2.0 3.0) true false)) (?: (< 5.0 6.0) 7.0 8.0) (?: (< 9.0 10.0) 11.0 12.0))")
+  }
+
+  test("Scan-Parser Integration Test 6: Variable") {
+    val text: String = "x + y + 3.0"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    assert(parser.expression().toString == "(+ (+ x y) 3.0)")
   }
 }

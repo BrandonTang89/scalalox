@@ -3,16 +3,38 @@ package lox
 import lox.TokenType.*
 
 import scala.annotation.tailrec
+import scala.collection.mutable.ArrayBuffer
 
 class Interpreter {
-
-  def interpret(expression: Expr): Unit = {
+  val environment: Environment = Environment()
+  def interpret(statements: ArrayBuffer[Stmt]): Unit = {
     try
-      val value: Any = evaluate(expression)
-      println(stringify(value))
+      for statement <- statements do
+          execute(statement)
     catch
       case error: RuntimeError => Lox.runtimeError(error)
   }
+
+  // Statement Execution
+  def execute(stmt: Stmt): Unit = {
+    stmt match
+      case stmt: Expression => visitExpressionStmt(stmt)
+      case stmt: Print => visitPrintStmt(stmt)
+      case stmt: Var => visitVarStmt(stmt)
+  }
+  def visitExpressionStmt(stmt: Expression): Unit = {
+    evaluate(stmt.expression)
+  }
+  def visitPrintStmt(stmt: Print): Unit = {
+    val value: Any = evaluate(stmt.expression)
+    println(stringify(value))
+  }
+  def visitVarStmt(stmt: Var): Unit = {
+    val value: Any = if stmt.initializer != null then evaluate(stmt.initializer) else null
+    environment.define(stmt.name.lexeme, value)
+  }
+
+  // Expression Evaluation
   @tailrec
   final def evaluate(expr: Expr): Any = {
     expr match
@@ -21,6 +43,7 @@ class Interpreter {
       case Literal(v) => v
       case Unary(o, r) => visitUnary(Unary(o, r))
       case Ternary(l, o1, m, o2, r) => visitTernaryExpr(Ternary(l, o1, m, o2, r))
+      case expr: Variable => visitVariableExpr(expr)
   }
   private def visitTernaryExpr(expr: Ternary): Any = {
     val left: Any = evaluate(expr.left)
@@ -90,6 +113,8 @@ class Interpreter {
       case BANG => !isTruthy(right)
       case _ => assert(false, "Unary Operator Mismatch")
   }
+
+  private def visitVariableExpr(expr: Variable): Any = environment.get(expr.name)
 
   // Helper Functions
   private def isTruthy(obj: Any): Boolean = {

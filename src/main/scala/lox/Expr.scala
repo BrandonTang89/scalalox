@@ -10,6 +10,7 @@ trait Expr{
       case Literal(v) => if v == null then "nil" else v.toString
       case Unary(o, r) => parenthesize(o.lexeme, r)
       case Ternary(l, o1, m, o2, r) => parenthesize(o1.lexeme + o2.lexeme, l, m, r)
+      case Variable(n) => n.lexeme
   }
   private def parenthesize(name: String, expressions: Expr*): String = {
     val sb: StringBuilder = StringBuilder("(").append(name)
@@ -30,3 +31,5 @@ case class Grouping(expression: Expr) extends Expr
 case class Literal(value: Any) extends Expr
 
 case class Unary(operator: Token, right: Expr) extends Expr
+
+case class Variable(name: Token) extends Expr

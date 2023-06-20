@@ -1,0 +1,9 @@
+print "one"; // test with run src/test/SampleLox.lox from sbt shell
+print true;
+print 2 + 1;
+
+/* Expect:
+one
+true
+3
+*/

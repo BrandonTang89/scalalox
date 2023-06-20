@@ -4,10 +4,14 @@ import lox.TokenType.*
 
 import collection.mutable.ArrayBuffer
 class Parser(val tokens: ArrayBuffer[Token]) {
-  def parse(): Expr =
-    try expression()
-    catch
-      case e: ParseError => null
+
+  /** Program Grammar
+   * program → declaration* EOF; */
+  def parse(): ArrayBuffer[Stmt] =
+    val statements: ArrayBuffer[Stmt] = ArrayBuffer[Stmt]()
+    while !isAtEnd do
+      statements.addOne(declaration())
+    statements
 
   private var current: Int = 0
   private def isAtEnd: Boolean = peek().tokenType == EOF
@@ -39,6 +43,55 @@ class Parser(val tokens: ArrayBuffer[Token]) {
         found = true
         advance()
     found
+  }
+
+
+  /** Declaration Grammar
+   *  declaration → varDecl | statement */
+  def declaration(): Stmt = {
+    try
+      if matches(VAR) then varDeclaration()
+      else statement()
+    catch
+      case error: ParseError =>
+        synchronize()
+        null
+  }
+
+  /** Var Declaration Grammar
+   *  varDecl → "var" IDENTIFIER ("=" expression)? : */
+
+  def varDeclaration(): Stmt = {
+    val name: Token = consume(IDENTIFIER, "Expect variable name.")
+    var initializer: Expr = null
+    if matches(EQUAL) then
+      initializer = expression()
+
+    consume(SEMICOLON, "Expect ';' after variable declaration")
+    Var(name, initializer)
+  }
+
+  /** Statement Grammar
+   *  statement → exprStmt | printStmt */
+  private def statement(): Stmt = {
+    if matches(PRINT) then printStatement()
+    else expressionStatement()
+  }
+
+  /** printStmt Grammar
+   * exprStmt → "print" expression ";" */
+  private def printStatement(): Stmt = {
+    val value: Expr = expression()
+    consume(SEMICOLON, "Expect ';' after print value.")
+    Print(value)
+  }
+
+  /** exprStmt Grammar
+   * exprStmt → expression ";" */
+  private def expressionStatement(): Stmt = {
+    val expr: Expr = expression()
+    consume(SEMICOLON, "Expect ';' after expression.")
+    Expression(expr)
   }
 
   /** Expression Grammar
@@ -129,12 +182,13 @@ class Parser(val tokens: ArrayBuffer[Token]) {
   }
 
   /** Primary Grammar
-   * primary → NUMBER | STRING | "true" | "false" | "nil" |"(" expression ")" ; */
+   * primary → NUMBER | STRING | "true" | "false" | "nil" |"(" expression ")" | IDENTIFIER; */
   private def primary(): Expr = {
     if matches(FALSE) then Literal(false)
     else if matches(TRUE) then Literal(true)
     else if matches(NIL) then Literal(null)
     else if matches(NUMBER, STRING) then Literal(previous().literal)
+    else if matches(IDENTIFIER) then Variable(previous())
     else if matches(LEFT_PAREN) then
       val expr: Expr = expression()
       consume(RIGHT_PAREN, "Expect ')' after expression.")

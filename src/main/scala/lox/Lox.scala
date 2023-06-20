@@ -16,7 +16,7 @@ object Lox {
 
   private def runFile(path: String): Unit = {
     val inputFile = Source.fromFile(path)
-    run(inputFile.getLines().mkString)
+    run(inputFile.getLines().mkString("\n")) // re-insert the new line characters
     inputFile.close()
     if hadError then System.exit(65)
     if hadRuntimeError then System.exit(70)
@@ -41,9 +41,9 @@ object Lox {
     val tokens: ArrayBuffer[Token] = scanner.scanTokens()
 
     val parser: Parser = Parser(tokens)
-    val expression: Expr = parser.parse()
+    val statements: ArrayBuffer[Stmt] = parser.parse()
 
-    if !hadError then interpreter.interpret(expression)
+    if !hadError then interpreter.interpret(statements)
   }
 
   def runtimeError(error: RuntimeError): Unit = {
