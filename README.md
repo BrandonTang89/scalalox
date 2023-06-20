@@ -29,7 +29,7 @@ var a = 1;
 }
 print a;
 ```
-will print 3 followed by 1.
+will print 3 followed by 1. Redefining a variable within a block merely assigns it. 
 
 We *assign* variables via `x = 9;`. Assignments are expressions that return the value being assigned to
 the variable. It is right associative so `a = b = c = 10` is treated as `a = (b = (c = 10))`, thus setting
