@@ -3,7 +3,7 @@ import lox.Parser.ParseError
 import lox.TokenType.*
 
 import collection.mutable.ArrayBuffer
-class Parser(val tokens: ArrayBuffer[Token]) {
+class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = false) {
 
   /** Program Grammar
    * program → declaration* EOF; */
@@ -61,21 +61,32 @@ class Parser(val tokens: ArrayBuffer[Token]) {
   /** Var Declaration Grammar
    *  varDecl → "var" IDENTIFIER ("=" expression)? : */
 
-  def varDeclaration(): Stmt = {
+  private def varDeclaration(): Stmt = {
     val name: Token = consume(IDENTIFIER, "Expect variable name.")
-    var initializer: Expr = null
+    var initializer: Option[Expr] = None
     if matches(EQUAL) then
-      initializer = expression()
+      initializer = Some(expression())
 
     consume(SEMICOLON, "Expect ';' after variable declaration")
     Var(name, initializer)
   }
 
   /** Statement Grammar
-   *  statement → exprStmt | printStmt */
+   *  statement → exprStmt | printStmt | block */
   private def statement(): Stmt = {
     if matches(PRINT) then printStatement()
+    else if matches(LEFT_BRACE) then Block(block())
     else expressionStatement()
+  }
+
+  /** Block Grammar
+   *  block → "{" declaration* "}"; */
+  private def block(): ArrayBuffer[Stmt] = {
+    val statements: ArrayBuffer[Stmt] = ArrayBuffer[Stmt]()
+    while !check(RIGHT_BRACE) && !isAtEnd do
+      statements.addOne(declaration())
+    consume(RIGHT_BRACE, "Expected ')' after block.")
+    statements
   }
 
   /** printStmt Grammar
@@ -90,23 +101,50 @@ class Parser(val tokens: ArrayBuffer[Token]) {
    * exprStmt → expression ";" */
   private def expressionStatement(): Stmt = {
     val expr: Expr = expression()
-    consume(SEMICOLON, "Expect ';' after expression.")
-    Expression(expr)
+    if check(SEMICOLON) || !parseExpressions then
+      consume(SEMICOLON, "Expect ';' after expression.")
+      Expression(expr)
+    else Print(expr)
   }
 
   /** Expression Grammar
-   *  expression → ternary (, expression)*;
+   *  expression → assignment (, expression)*;
    *
    *  The comma operator is left associative so
    *   a = 1, b = 2, c = 3 is ((a = 1, b = 2), c = 3) returning 3
    */
   def expression(): Expr = {
-    var expr: Expr = ternary()
+    var expr: Expr = assignment()
     while matches(COMMA) do
       val operator: Token = previous()
       val right: Expr = expression()
       expr = Binary(expr, operator, right)
     expr
+  }
+
+  /** Assignment Grammar
+   *  assignment → IDENTIFIER "=" assignment | equality
+   *
+   *  Right associative
+   *  Allows for multiple assignments: a = b = c = 10 is a = (b = (c = 10))
+   */
+
+  private def assignment(): Expr = {
+    val expr: Expr = ternary()
+
+    if matches(EQUAL) then
+      val equals: Token = previous()
+      val value: Expr = assignment()
+
+      expr match
+        case expr: Variable =>
+          val name: Token = expr.name
+          Assign(name, value)
+        case _ =>
+          error(equals, "Invalid assignment target.")
+          expr
+
+    else expr
   }
 
   /** Ternary Grammar

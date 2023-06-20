@@ -1,11 +1,22 @@
 package lox
 import scala.collection.mutable
-class Environment {
-  private val values: mutable.HashMap[String, Any] = mutable.HashMap[String, Any]()
-  def define(name: String, value: Any): Unit = values(name) = value
+class Environment(var enclosing: Environment = null) {
+  private val values: mutable.HashMap[String, Option[Any]] = mutable.HashMap[String, Option[Any]]()
+
+  def define(name: String, value: Any): Unit = values(name) = Some(value)
+  def define(name: String): Unit = values(name) = None
+
   def get(name: Token): Any =
-    val v = values.getOrElse(name.lexeme, null)
-    v match
-      case null => throw RuntimeError(name, "Undefined variable '" + name.lexeme + "'.")
-      case _ => v
+    if values.contains(name.lexeme) then
+      val v = values(name.lexeme)
+      v match
+        case Some(value) => value
+        case None => throw RuntimeError(name, "Uninitialized variable '" + name.lexeme + "'.")
+    else if enclosing != null then enclosing.get(name)
+    else throw RuntimeError(name, "Undefined variable '" + name.lexeme + "'.")
+
+  def assign(name: Token, value: Any): Unit =
+    if values.contains(name.lexeme) then values(name.lexeme) = Some(value)
+    else if enclosing != null then enclosing.assign(name, value)
+    else throw RuntimeError(name, "Undefined variable '" + name.lexeme + "'.")
 }

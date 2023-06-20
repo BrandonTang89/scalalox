@@ -5,8 +5,8 @@ import lox.TokenType.*
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 
-class Interpreter {
-  val environment: Environment = Environment()
+class Interpreter{
+  var environment: Environment = Environment()
   def interpret(statements: ArrayBuffer[Stmt]): Unit = {
     try
       for statement <- statements do
@@ -21,29 +21,50 @@ class Interpreter {
       case stmt: Expression => visitExpressionStmt(stmt)
       case stmt: Print => visitPrintStmt(stmt)
       case stmt: Var => visitVarStmt(stmt)
+      case stmt: Block => visitBlockStmt(stmt)
   }
-  def visitExpressionStmt(stmt: Expression): Unit = {
+
+  private def visitBlockStmt(stmt: Block): Unit = {
+    executeBlock(stmt.statements, Environment(environment))
+  }
+  private def executeBlock(statements: ArrayBuffer[Stmt], environment: Environment): Unit = {
+    val previous: Environment = this.environment
+    try
+      this.environment = environment
+      for statement <- statements do
+        execute(statement)
+    finally
+      this.environment = previous
+  }
+  private def visitExpressionStmt(stmt: Expression): Unit = {
     evaluate(stmt.expression)
   }
-  def visitPrintStmt(stmt: Print): Unit = {
+  private def visitPrintStmt(stmt: Print): Unit = {
     val value: Any = evaluate(stmt.expression)
     println(stringify(value))
   }
-  def visitVarStmt(stmt: Var): Unit = {
-    val value: Any = if stmt.initializer != null then evaluate(stmt.initializer) else null
-    environment.define(stmt.name.lexeme, value)
+  private def visitVarStmt(stmt: Var): Unit = {
+    stmt.initializer match
+      case None => environment.define(stmt.name.lexeme)
+      case Some(expr) => environment.define(stmt.name.lexeme, evaluate(expr))
   }
 
   // Expression Evaluation
   @tailrec
   final def evaluate(expr: Expr): Any = {
     expr match
-      case Binary(l, o, r) => visitBinaryExpr(Binary(l, o, r))
+      case expr: Binary => visitBinaryExpr(expr)
       case Grouping(e) => evaluate(e)
       case Literal(v) => v
-      case Unary(o, r) => visitUnary(Unary(o, r))
-      case Ternary(l, o1, m, o2, r) => visitTernaryExpr(Ternary(l, o1, m, o2, r))
+      case expr: Unary => visitUnary(expr)
+      case expr: Ternary => visitTernaryExpr(expr)
       case expr: Variable => visitVariableExpr(expr)
+      case expr: Assign => visitAssignExpr(expr)
+  }
+  private def visitAssignExpr(expr: Assign): Any = {
+    val value: Any = evaluate(expr.value)
+    environment.assign(expr.name, value)
+    value
   }
   private def visitTernaryExpr(expr: Ternary): Any = {
     val left: Any = evaluate(expr.left)

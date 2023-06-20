@@ -33,21 +33,21 @@ object Lox {
     }
   }
 
-  private val interpreter = new Interpreter()
+  private val interpreter: Interpreter = Interpreter()
   private var hadError: Boolean = false
   private var hadRuntimeError: Boolean = false
   private def run(source: String): Unit = {
     val scanner: Scanner = Scanner(source)
     val tokens: ArrayBuffer[Token] = scanner.scanTokens()
 
-    val parser: Parser = Parser(tokens)
+    val parser: Parser = Parser(tokens, parseExpressions = true)
     val statements: ArrayBuffer[Stmt] = parser.parse()
 
     if !hadError then interpreter.interpret(statements)
   }
 
   def runtimeError(error: RuntimeError): Unit = {
-    System.err.println(error.getMessage + "\n[line " + error.token.line + "]")
+    System.err.println("Runtime Error: " + error.getMessage + "\n[Line " + error.token.line + "]")
     hadRuntimeError = true
   }
   def error(line: Int, message: String): Unit = {
@@ -58,7 +58,7 @@ object Lox {
     else report(token.line, " at '" + token.lexeme + "'", message)
   }
   private def report(line: Int, where: String, message: String): Unit = {
-    System.err.println("Line [" + line.toString + "] Error" + where + ": " + message)
+    System.err.println("Line [" + line.toString + "] Syntax Error" + where + ": " + message)
     hadError = true
   }
 
