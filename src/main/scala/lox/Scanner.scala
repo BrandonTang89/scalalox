@@ -128,7 +128,9 @@ class Scanner(val source: String) {
 object Scanner{
   private val keywords: HashMap[String, TokenType] = HashMap(
     ("and", AND),
+    ("break", BREAK),
     ("class", CLASS),
+    ("continue", CONTINUE),
     ("else", ELSE),
     ("false", FALSE),
     ("for", FOR),

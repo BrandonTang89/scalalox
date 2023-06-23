@@ -9,6 +9,21 @@ We aim to produce maintainable code that is well-documented,
 implements good design patterns and is (somewhat) tested.
 
 # Language Details
+## Expression Evalulation
+### Logical Or and And
+These act as control flow operations since the implement short-circuiting.
+
+The return value is **not** guaranteed to be the literal `true` or `false` but is only guaranteed
+to have the same "truthiness" as what the boolean expression should evaluate to.
+
+### Ternary Operator
+Lox implements the ternary operator as a control flow structure as well. I.e. we only evaluate (and return)
+the `?` term if the condition is true, else we evaluate and return the ':' term.
+```
+var a = 0;
+var b = a > 0 ? (a = 1) : (a = 2)
+// a == 2, b == 2
+```
 ## Variables and Scoping
 
 Variables in Lox are dynamically typed. They are either of 
@@ -41,6 +56,37 @@ A `RuntimeError` occurs if we assign variables in a scope that they are not lexi
 
 We *evaluate* a variable when it is used for computation e.g. `print x+10`. This uses the instance of the variable
 within the smallest possible scope or raises a `RuntimeError` if not available or not initialised.
+
+## Control Flow
+These work exactly like in C
+### If-Else
+```
+if (x == 0){  // condition: Expression
+    y = 1;    // ifBody: Statement
+}
+else y = 2;   // elseBody: Statement
+```
+Note that to evaulate whether a condition is true, we evaluate the "truthiness" of the expression.
+- `false` is false
+- `nil` is false
+- Everything else is true
+
+### While Loops
+```
+while (x < 10){  // condition: Expression
+    x = x + 1    // body: Statement
+}
+``` 
+Lox also supports `continue;` and `break;` statements within loops.
+
+### For loops
+```
+for (var i = 0; i < n; i = i + 1){
+    if (i == 2) break;
+}
+```
+For loops are implemented as syntactic sugar for while-loops.
+
 ## Grammar
 Will be filled in once everything is much more finalised.
 
@@ -50,11 +96,12 @@ Compared to the tree-walk interpreter in the book, I'm attempting to do the chal
 - Added multi-line comment support.  
 - Added ternary operator.
   - `a ? b : c` evaluates `a`, `b` and `c`. Returns `b` if `a` is truthy else `c`.
-  - Higher precedence than equality (`==` and `!-`)
-  - Right associative
+  - Higher precedence than equality (`==` and `!-`).
+  - Right associative.
 - Added comma operator.
   - `a,b,c` evaluates `a`, `b` and `c`. Returns the value of `c`.
-  - Higher precedence than ternary operator
+  - Higher precedence than ternary operator.
 - Added custom errors for binary operators without left operand.
-- Added error on using variables without initialisation
-- Added support for printing expressions from the REPL
+- Added error on using variables without initialisation.
+- Added support for printing expressions from the REPL.
+- Added continue and break statements for usage within loops.

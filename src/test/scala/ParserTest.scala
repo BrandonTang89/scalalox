@@ -1,7 +1,7 @@
 import lox.TokenType.{EOF, LEFT_PAREN, MINUS, NUMBER, RIGHT_PAREN, STAR}
-import lox.{Parser, Scanner, Token}
-
+import lox.{Parser, RuntimeError, Scanner, Token, Lox}
 import org.scalatest.funsuite.AnyFunSuite
+
 import scala.collection.mutable.ArrayBuffer
 
 class ParserTest extends AnyFunSuite {
@@ -83,4 +83,19 @@ class ParserTest extends AnyFunSuite {
     val parser: Parser = Parser(Scanner(text).scanTokens())
     assert(parser.expression().toString == "(+ (+ x y) 3.0)")
   }
+
+  test("Parser Test 7: Continue without A Loop") {
+    val text: String = "var a = 1; continue;"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    parser.parse()
+    assert(Lox.hadError)
+  }
+
+  test("Parser Test 8: Break without A Loop") {
+    val text: String = "var a = 1; break;"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    parser.parse()
+    assert(Lox.hadError)
+  }
+
 }

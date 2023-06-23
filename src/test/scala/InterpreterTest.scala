@@ -1,7 +1,6 @@
 import lox.TokenType.IDENTIFIER
 import org.scalatest.funsuite.AnyFunSuite
 import lox.{Interpreter, Parser, RuntimeError, Scanner, Token, Stmt}
-
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -130,10 +129,85 @@ class InterpreterTest extends AnyFunSuite {
     assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)) == 20.0)
   }
 
+  test("Interpreter Test 14: If Conditional") {
+    val text: String = "var a; if (true) a = 10; else a = 20;"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 10.0)
+  }
 
+  test("Interpreter Test 14.1: If Conditional") {
+    val text: String = "var a; if (false) a = 10; else a = 20;"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 20.0)
+  }
 
+  test("Interpreter Test 15: Logical Or") {
+    val text: String = "var a=0; if ((a = 10) or (a = 20)) 1;"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 10.0)
+  }
 
+  test("Interpreter Test 15.1: Logical Or") {
+    val text: String = "var a=0; if ((a = false) or (a = 20)) 1;"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 20.0)
+  }
 
+  test("Interpreter Test 16: Logical And") {
+    val text: String = "var a=0; if ((a = 10) and (a = 20)) 1;"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 20.0)
+  }
 
+  test("Interpreter Test 17: For Loop") {
+    val text: String = "var a = 1; for (var i = 0; i < 10; i = i + 1) a = a * 2;"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 1024)
+  }
 
+  test("Interpreter Test 18: While Loop") {
+    val text: String = "var a = 1; while (a < 10) a = a + 1;"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 10)
+  }
+
+  test("Interpreter Test 19: While Loop with Break") {
+    val text: String = "var a = 1; while (a < 10) {a = a + 1; if (a == 5) break;}"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 5)
+  }
+
+  test("Interpreter Test 19.1: While Loop with Break") {
+    val text: String = "var a = 1; var b = 1; while (a < 10) {while (b < 10) {if (b == 5) break; else b = b + 1;} a = a + 1; }"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 10)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)) == 5)
+  }
+
+  test("Interpreter Test 20: While Loop with Continue") {
+    val text: String = "var a = 0; var b = 0; while (a < 10) {a = a + 1; if (a <= 5) continue; b = b + 1;  }"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 10)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)) == 5)
+  }
 }

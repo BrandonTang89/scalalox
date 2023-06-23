@@ -5,6 +5,7 @@ import lox.TokenType.*
 import collection.mutable.ArrayBuffer
 class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = false) {
 
+  private var withinLoop: Int = 0
   /** Program Grammar
    * program → declaration* EOF; */
   def parse(): ArrayBuffer[Stmt] =
@@ -72,11 +73,104 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
   }
 
   /** Statement Grammar
-   *  statement → exprStmt | printStmt | block */
+   *  statement → exprStmt | ifStmt | printStmt | forStmt | whileStmt | breakStatement | continueStatement | block;
+   *  break and continue statements can only be written for statements within a loop body
+   *  (checked with a global variable).
+   */
   private def statement(): Stmt = {
     if matches(PRINT) then printStatement()
+    else if matches(IF) then ifStatement()
+    else if matches(FOR) then forStatement()
+    else if matches(WHILE) then whileStatement()
     else if matches(LEFT_BRACE) then Block(block())
+    else if matches(BREAK) then breakStatement()
+    else if matches(CONTINUE) then continueStatement()
     else expressionStatement()
+  }
+
+
+  /** Break and Continue
+   *  breakStatement → "break" ";";
+   *  continueStatement → "continue" ";";*/
+  private def breakStatement(): Stmt = {
+    if withinLoop > 0 then
+      consume(SEMICOLON, "Expect ';' after 'break'.")
+      Break()
+    else
+      error(previous(), "Unexpected 'break' outside a loop.")
+      null
+  }
+
+  private def continueStatement(): Stmt = {
+    if withinLoop > 0 then
+      consume(SEMICOLON, "Expect ';' after 'continue'.")
+      Continue()
+    else
+      error(previous(), "Unexpected 'continue' outside a loop.")
+      null
+  }
+
+  /** ForStmt Grammar
+   * forStmt → "for" "(" ( varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement ; */
+  private def forStatement(): Stmt = {
+    consume(LEFT_PAREN, "Expect '(' after 'for'.")
+    var initializer: Stmt = null
+    if matches(SEMICOLON) then initializer = null
+    else if matches(VAR) then initializer = varDeclaration()
+    else initializer = expressionStatement()
+
+    var condition: Expr = null
+    if !check(SEMICOLON) then condition = expression()
+    consume(SEMICOLON, "Expect ';' after loop condition.")
+
+    var increment: Expr = null
+    if !check(RIGHT_PAREN) then increment = expression()
+    consume(RIGHT_PAREN, "Expect ')' after for clauses.")
+
+    withinLoop += 1
+    var body: Stmt = statement()
+    withinLoop -= 1
+
+    // Desugaring
+    if increment != null then
+      body = Block(ArrayBuffer(body, Expression(increment)))
+
+    if condition == null then condition = Literal(true)
+    body = While(condition, body)
+
+    if initializer != null then
+      body = Block(ArrayBuffer(initializer, body))
+
+    body
+  }
+
+  /** whileStatement Grammar
+   * whileStmt → "while" "(" expression ")" loopBodyStmt;
+   */
+  private def whileStatement(): Stmt = {
+    consume(LEFT_PAREN, "Expect '(' after 'while'.")
+    val condition: Expr = expression()
+    consume(RIGHT_PAREN, "Expect ')' after while condition.")
+    withinLoop += 1
+    val body: Stmt = statement()
+    withinLoop -= 1
+    While(condition, body)
+  }
+
+
+  /** IfStmt Grammar
+   * ifStmt → "if" "(" expression ")" statement ("else" statement)?;
+   *
+   * When we parse an else, we associate it with the lowest if*/
+  private def ifStatement(): Stmt = {
+    consume(LEFT_PAREN, "Expect '(' after 'if'.")
+    val condition: Expr = expression()
+    consume(RIGHT_PAREN, "Expect ')' after if condition.")
+    val thenBranch: Stmt = statement()
+    var elseBranch: Stmt = null
+    if matches(ELSE) then
+      elseBranch = statement()
+    If(condition, thenBranch, elseBranch)
   }
 
   /** Block Grammar
@@ -123,7 +217,7 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
   }
 
   /** Assignment Grammar
-   *  assignment → IDENTIFIER "=" assignment | equality
+   *  assignment → IDENTIFIER "=" assignment | Ternary
    *
    *  Right associative
    *  Allows for multiple assignments: a = b = c = 10 is a = (b = (c = 10))
@@ -148,19 +242,44 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
   }
 
   /** Ternary Grammar
-   *  ternary → equality ? ternary : ternary;
+   *  ternary → logic_or ("?" ternary ":" ternary))?;
    *
    * var x = 2 > 3 ? 5 < 6 ? 7 : 8 : 9 < 10 ? 11 : 12
    * is parsed as
    * var x = (2 > 3) ? (5 < 6 ? 7 : 8) : (9 < 10 ? 11 : 12)*/
   private def ternary(): Expr = {
-    var expr = equality()
+    var expr: Expr = or()
     if matches(QUESTION_MARK) then
       val operator1: Token = previous()
       val middle: Expr = ternary()
       val operator2: Token = consume(COLON, "expected : after ?.")
       val right: Expr = ternary()
       expr = Ternary(expr, operator1, middle, operator2, right)
+    expr
+  }
+
+  /** Logic-or Grammar
+   *  logic_or → logic_and ( "or" logic_and )* ;
+   */
+
+  private def or(): Expr = {
+    var expr: Expr = and()
+    while matches(OR) do
+      val operator: Token = previous()
+      val right: Expr = and()
+      expr = Logical(expr, operator, right)
+    expr
+  }
+
+  /** Logic_and Grammar
+   *  Logic_and → equality ( "and" equality )* ;
+   */
+  private def and(): Expr = {
+    var expr: Expr = equality()
+    while matches(AND) do
+      val operator: Token = previous()
+      val right: Expr = and()
+      expr = Logical(expr, operator, right)
     expr
   }
 

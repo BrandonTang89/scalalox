@@ -22,6 +22,24 @@ class Interpreter{
       case stmt: Print => visitPrintStmt(stmt)
       case stmt: Var => visitVarStmt(stmt)
       case stmt: Block => visitBlockStmt(stmt)
+      case stmt: If => visitIfStmt(stmt)
+      case stmt: While => visitWhileStmt(stmt)
+      case stmt: Break => throw Interpreter.loopBreakException(stmt)
+      case stmt: Continue => throw Interpreter.loopContinueException(stmt)
+  }
+
+  private def visitWhileStmt(stmt: While): Unit = {
+    while isTruthy(evaluate(stmt.condition)) do
+      try
+        execute(stmt.body)
+      catch
+        case e: Interpreter.loopBreakException => return
+        case e: Interpreter.loopContinueException => // just continue
+  }
+  private def visitIfStmt(stmt: If): Unit = {
+    if isTruthy(evaluate(stmt.condition)) then
+      execute(stmt.thenBranch)
+    else if stmt.elseBranch != null then execute(stmt.elseBranch)
   }
 
   private def visitBlockStmt(stmt: Block): Unit = {
@@ -60,6 +78,19 @@ class Interpreter{
       case expr: Ternary => visitTernaryExpr(expr)
       case expr: Variable => visitVariableExpr(expr)
       case expr: Assign => visitAssignExpr(expr)
+      case expr: Logical => visitLogicalExpr(expr)
+  }
+
+  /** Returns an object with the same truthiness value as the boolean
+   *  expression should evaluate to.
+   */
+  private def visitLogicalExpr(expr: Logical): Any = {
+    val left: Any = evaluate(expr.left)
+
+    expr.operator.tokenType match
+      case OR => if isTruthy(left) then left else evaluate(expr.right)
+      case AND => if !isTruthy(left) then left else evaluate(expr.right)
+      case _ => assert(false, "Unexpected logical operator")
   }
   private def visitAssignExpr(expr: Assign): Any = {
     val value: Any = evaluate(expr.value)
@@ -68,11 +99,9 @@ class Interpreter{
   }
   private def visitTernaryExpr(expr: Ternary): Any = {
     val left: Any = evaluate(expr.left)
-    val middle: Any = evaluate(expr.middle)
-    val right: Any = evaluate(expr.right)
 
     (expr.operator1.tokenType, expr.operator2.tokenType) match
-      case (QUESTION_MARK, COLON) => if isTruthy(left) then middle else right
+      case (QUESTION_MARK, COLON) => if isTruthy(left) then evaluate(expr.middle) else evaluate(expr.right)
       case _ => assert(false, "Unknown Ternary Operator")
   }
   private def visitBinaryExpr(expr: Binary): Any = {
@@ -158,11 +187,8 @@ class Interpreter{
         else text
       case o => o.toString
   }
-
-
-
-
-
-
-
+}
+object Interpreter{
+  private case class loopBreakException(breakStatement: Stmt) extends Exception
+  private case class loopContinueException(continueStatement: Stmt) extends Exception
 }
