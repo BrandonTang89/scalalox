@@ -1,4 +1,5 @@
 package lox
+import collection.mutable.ArrayBuffer
 
 trait Expr{
 
@@ -32,4 +33,6 @@ case class Logical(left: Expr, operator: Token, right: Expr) extends Expr
 case class Literal(value: Any) extends Expr
 case class Unary(operator: Token, right: Expr) extends Expr
 case class Variable(name: Token) extends Expr
+case class Call(calle: Expr, paren: Token, arguments: ArrayBuffer[Expr]) extends Expr
+case class Lambda(keyword: Token, parameters: ArrayBuffer[Token], body: ArrayBuffer[Stmt]) extends Expr
 

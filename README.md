@@ -19,7 +19,7 @@ to have the same "truthiness" as what the boolean expression should evaluate to.
 ### Ternary Operator
 Lox implements the ternary operator as a control flow structure as well. I.e. we only evaluate (and return)
 the `?` term if the condition is true, else we evaluate and return the ':' term.
-```
+```agsl
 var a = 0;
 var b = a > 0 ? (a = 1) : (a = 2)
 // a == 2, b == 2
@@ -36,7 +36,7 @@ Each block in Lox is specified as being a sequence of statements within a pair o
 Each block has its own lexical environment.
 
 We *define* variables via `var x = 10;`. These declarations will be localised to the current block, so doing
-```lox
+```agsl
 var a = 1;
 {
   var a = a + 2;
@@ -60,7 +60,7 @@ within the smallest possible scope or raises a `RuntimeError` if not available o
 ## Control Flow
 These work exactly like in C
 ### If-Else
-```
+```agsl
 if (x == 0){  // condition: Expression
     y = 1;    // ifBody: Statement
 }
@@ -72,7 +72,7 @@ Note that to evaulate whether a condition is true, we evaluate the "truthiness" 
 - Everything else is true
 
 ### While Loops
-```
+```agsl
 while (x < 10){  // condition: Expression
     x = x + 1    // body: Statement
 }
@@ -80,13 +80,64 @@ while (x < 10){  // condition: Expression
 Lox also supports `continue;` and `break;` statements within loops.
 
 ### For loops
-```
+```agsl
 for (var i = 0; i < n; i = i + 1){
     if (i == 2) break;
 }
 ```
 For loops are implemented as syntactic sugar for while-loops.
 
+## Functions
+Functions are first class objects in Lox. We can do a "regular" function declaration as such:
+```agsl
+fun sum(a, b, c){
+    var x = a + b + c;
+    return x;
+}
+```
+This is syntactic sugar for creating a function object and binding it to a name
+```agsl
+var sum = fun (a, b, c){
+   var x = a + b + c;
+   return x;
+ }
+```
+These function objects are parsed as expressions and so can be used wherever we would normally use expressions.
+
+Here are some examples:
+```agsl
+var a = (1 < 2 ? fun (a){return a*2;} : fun(a){return a/2;})(1);
+// a == 2
+```
+
+```agsl
+fun thrice(fn) {
+    var x = 1; 
+    for (var i = 1; i <= 3; i = i + 1) {
+        x = fn(x);
+    } 
+    return x;
+}
+var a = thrice(fun (a) {return a*2;});
+// a == 8
+```
+
+### Scoping
+These functions are scoped with closures.
+```agsl
+fun makeCounter() {
+  var i = 0;
+  fun count(){
+    i = i + 1;
+    return i;
+  }
+  return count;
+}
+var counter = makeCounter();
+var a = counter(); // 1
+var b = counter(); // 2
+```
+This works since the `i` is captured by the closure of count.
 ## Grammar
 Will be filled in once everything is much more finalised.
 
@@ -105,3 +156,5 @@ Compared to the tree-walk interpreter in the book, I'm attempting to do the chal
 - Added error on using variables without initialisation.
 - Added support for printing expressions from the REPL.
 - Added continue and break statements for usage within loops.
+- Added lambda functions.
+  - Replaced regular functions with syntactic sugar for lambdas.

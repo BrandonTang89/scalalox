@@ -6,7 +6,18 @@ import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 
 class Interpreter{
-  var environment: Environment = Environment()
+  val globals: Environment = Environment()
+  // Native Functions
+  globals.define("clock", new LoxCallable{
+    def arity: Int = 0
+    def call(interpreter: Interpreter, arguments: ArrayBuffer[Any]): Any = {
+      System.currentTimeMillis().toDouble / 1000.0
+    }
+    override def toString: String = "<native clock fn>"
+  })
+
+
+  var environment: Environment = globals
   def interpret(statements: ArrayBuffer[Stmt]): Unit = {
     try
       for statement <- statements do
@@ -26,7 +37,22 @@ class Interpreter{
       case stmt: While => visitWhileStmt(stmt)
       case stmt: Break => throw Interpreter.loopBreakException(stmt)
       case stmt: Continue => throw Interpreter.loopContinueException(stmt)
+      case stmt: Return => visitReturnStmt(stmt)
+      // case stmt: FunctionDec => visitFunctionDeclStmt(stmt)
   }
+
+  private def visitReturnStmt(stmt: Return): Unit = {
+    var value: Any = null
+    if stmt.value != null then value = evaluate(stmt.value)
+    throw ReturnException(value)
+  }
+
+  /** Deprecated function Declaration (replaced with variable assignment to lambdas)
+  private def visitFunctionDeclStmt(stmt: FunctionDec): Unit = {
+    val function: LoxFunction = LoxFunction(stmt.name, Lambda(stmt.name, stmt.params, stmt.body), environment)
+    environment.define(stmt.name.lexeme, function)
+  }
+  */
 
   private def visitWhileStmt(stmt: While): Unit = {
     while isTruthy(evaluate(stmt.condition)) do
@@ -45,7 +71,7 @@ class Interpreter{
   private def visitBlockStmt(stmt: Block): Unit = {
     executeBlock(stmt.statements, Environment(environment))
   }
-  private def executeBlock(statements: ArrayBuffer[Stmt], environment: Environment): Unit = {
+  def executeBlock(statements: ArrayBuffer[Stmt], environment: Environment): Unit = {
     val previous: Environment = this.environment
     try
       this.environment = environment
@@ -79,6 +105,12 @@ class Interpreter{
       case expr: Variable => visitVariableExpr(expr)
       case expr: Assign => visitAssignExpr(expr)
       case expr: Logical => visitLogicalExpr(expr)
+      case expr: Call => visitCallExpr(expr)
+      case expr: Lambda => visitLambdaExpr(expr)
+  }
+
+  private def visitLambdaExpr(expr: Lambda): Any = {
+    LoxFunction(expr.keyword, expr, environment)
   }
 
   /** Returns an object with the same truthiness value as the boolean
@@ -162,6 +194,19 @@ class Interpreter{
           case _ => RuntimeError(expr.operator, "Operand must be a number.")
       case BANG => !isTruthy(right)
       case _ => assert(false, "Unary Operator Mismatch")
+  }
+
+  private def visitCallExpr(expr: Call): Any = {
+    val callee: Any = evaluate(expr.calle)
+    val arguments: ArrayBuffer[Any] = expr.arguments.map(evaluate)
+    callee match
+      case function: LoxCallable =>
+        if arguments.size != function.arity then
+          throw RuntimeError(expr.paren, "Expected " + function.arity + " arguments but got" +
+            arguments.size + ".")
+
+        else function.call(this, arguments)
+      case _ => throw RuntimeError(expr.paren, "Can only call functions and classes.")
   }
 
   private def visitVariableExpr(expr: Variable): Any = environment.get(expr.name)

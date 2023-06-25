@@ -6,6 +6,7 @@ import collection.mutable.ArrayBuffer
 class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = false) {
 
   private var withinLoop: Int = 0
+  private var withinFunction: Int = 0
   /** Program Grammar
    * program → declaration* EOF; */
   def parse(): ArrayBuffer[Stmt] =
@@ -35,6 +36,11 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
     if isAtEnd then false
     else peek().tokenType == tokenType
   }
+  private def moveBack(): Token = {
+    assert(current > 0)
+    current -= 1
+    tokens(current)
+  }
 
   /** matches(ts) advances if the current tokenType is in ts */
   private def matches(types: TokenType*): Boolean = {
@@ -48,16 +54,37 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
 
 
   /** Declaration Grammar
-   *  declaration → varDecl | statement */
+   *  declaration → funDecl | varDecl | statement */
   def declaration(): Stmt = {
     try
       if matches(VAR) then varDeclaration()
+      else if matches(FUN) then function("function")
       else statement()
     catch
       case error: ParseError =>
         synchronize()
         null
   }
+
+  /** Fun Declaration
+   *  funDecl → ("fun" function) | expressionStmt; // where the expressionStmt is one starting with "fun"
+   *  namedFunction -> IDENTIFIER lambdaFunction;
+   *  lambdaFunction ->  "(" parameters? ")" block;
+   *  parameters → IDENTIFIER ( "," IDENTIFIER )*;
+   */
+
+  private def function(kind: String): Stmt = {
+    var name: Token = null
+    if check(IDENTIFIER) then
+      name = consume(IDENTIFIER, "") // absorb the name
+      val lambda:Lambda = lambdaFunction(kind)
+      Var(name, Some(lambda))
+    else
+      // Expression Statement
+      moveBack() // Get back to fun, with the knowledge that we aren't at a declaration
+      expressionStatement()
+  }
+
 
   /** Var Declaration Grammar
    *  varDecl → "var" IDENTIFIER ("=" expression)? : */
@@ -73,7 +100,9 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
   }
 
   /** Statement Grammar
-   *  statement → exprStmt | ifStmt | printStmt | forStmt | whileStmt | breakStatement | continueStatement | block;
+   *  statement → exprStmt | ifStmt | printStmt |
+   *              forStmt | whileStmt | breakStatement | continueStatement |
+   *              returnStatement | block;
    *  break and continue statements can only be written for statements within a loop body
    *  (checked with a global variable).
    */
@@ -85,7 +114,18 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
     else if matches(LEFT_BRACE) then Block(block())
     else if matches(BREAK) then breakStatement()
     else if matches(CONTINUE) then continueStatement()
+    else if matches(RETURN) then returnStatement()
     else expressionStatement()
+  }
+
+  private def returnStatement(): Stmt = {
+    val keyword: Token = previous()
+    if withinFunction == 0 then
+      error(keyword, "Unexpected 'return' outside a function definition.")
+    var value: Expr = null
+    if !check(SEMICOLON) then value = expression()
+    consume(SEMICOLON, "Expect ';' after return value.")
+    Return(keyword, value)
   }
 
 
@@ -93,21 +133,17 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
    *  breakStatement → "break" ";";
    *  continueStatement → "continue" ";";*/
   private def breakStatement(): Stmt = {
-    if withinLoop > 0 then
-      consume(SEMICOLON, "Expect ';' after 'break'.")
-      Break()
-    else
+    if withinLoop == 0 then
       error(previous(), "Unexpected 'break' outside a loop.")
-      null
+    consume(SEMICOLON, "Expect ';' after 'break'.")
+    Break()
   }
 
   private def continueStatement(): Stmt = {
-    if withinLoop > 0 then
-      consume(SEMICOLON, "Expect ';' after 'continue'.")
-      Continue()
-    else
+    if withinLoop == 0 then
       error(previous(), "Unexpected 'continue' outside a loop.")
-      null
+    consume(SEMICOLON, "Expect ';' after 'continue'.")
+    Continue()
   }
 
   /** ForStmt Grammar
@@ -175,11 +211,11 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
 
   /** Block Grammar
    *  block → "{" declaration* "}"; */
-  private def block(): ArrayBuffer[Stmt] = {
+  private def block(): ArrayBuffer[Stmt] = { // assumes the '{' is already consumed
     val statements: ArrayBuffer[Stmt] = ArrayBuffer[Stmt]()
     while !check(RIGHT_BRACE) && !isAtEnd do
       statements.addOne(declaration())
-    consume(RIGHT_BRACE, "Expected ')' after block.")
+    consume(RIGHT_BRACE, "Expected '}' after block.")
     statements
   }
 
@@ -329,17 +365,39 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
 
 
   /** Unary Grammar
-   * unary → ( "!" | "-" ) unary | primary ; */
+   * unary → ( "!" | "-" ) unary | call ; */
   private def unary(): Expr = {
     if matches(BANG, MINUS) then
       val operator: Token = previous()
       val right = unary()
       Unary(operator, right)
-    else primary()
+    else call()
+  }
+  /** Call Grammar
+   *  call → primary ("(" arguments? ")")*;
+   *  arguments -> assignment ("," assignment)*;
+   */
+  private def call(): Expr = {
+    var expr: Expr = primary()
+    while matches(LEFT_PAREN) do
+      expr = finishCall(expr)
+    expr
+  }
+  private def finishCall(callee: Expr): Expr = {
+    val arguments: ArrayBuffer[Expr] = ArrayBuffer[Expr]()
+    if !check(RIGHT_PAREN) then
+      while
+        if arguments.size >= 255 then error(peek(), "Can't have more than 255 arguments.")
+        // Report but don't throw error
+        arguments.addOne(assignment()) // avoid allowing comma operator
+        matches(COMMA)
+      do()
+    val paren: Token = consume(RIGHT_PAREN, "Expect ')' after arguments.")
+    Call(callee, paren, arguments)
   }
 
   /** Primary Grammar
-   * primary → NUMBER | STRING | "true" | "false" | "nil" |"(" expression ")" | IDENTIFIER; */
+   * primary → NUMBER | STRING | "true" | "false" | "nil" |"(" expression ")" | IDENTIFIER | lambda; */
   private def primary(): Expr = {
     if matches(FALSE) then Literal(false)
     else if matches(TRUE) then Literal(true)
@@ -350,6 +408,7 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
       val expr: Expr = expression()
       consume(RIGHT_PAREN, "Expect ')' after expression.")
       Grouping(expr)
+    else if matches(FUN) then lambdaFunction("lambda function")
 
     else if matches(COMMA) then
       val operator: Token = previous()
@@ -374,7 +433,24 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
 
     else throw error(peek(), "Expect expression.")
   }
-
+  private def lambdaFunction(kind: String): Lambda = {
+    val keyword: Token = previous() // either 'fun' or function name
+    consume(LEFT_PAREN, "Expect '(' after " + kind + " name or declaration.")
+    val parameters: ArrayBuffer[Token] = ArrayBuffer[Token]()
+    if !check(RIGHT_PAREN) then
+      while
+        if parameters.size >= 255 then
+          error(peek(), "Can't have more than 255 parameters.")
+        parameters.addOne(consume(IDENTIFIER, "Expect parameter name."))
+        matches(COMMA)
+      do ()
+    consume(RIGHT_PAREN, "Expect ')' after parameters.")
+    consume(LEFT_BRACE, "Expect '{' before " + kind + " body.")
+    withinFunction += 1
+    val body: ArrayBuffer[Stmt] = block()
+    withinFunction -= 1
+    Lambda(keyword, parameters, body)
+  }
 
   // Parser Error Handling
   /** Expects a specific tokenType, consumes it */

@@ -11,3 +11,6 @@ case class If(condition: Expr, thenBranch: Stmt, elseBranch: Stmt) extends Stmt
 case class While(condition: Expr, body: Stmt) extends Stmt
 case class Break() extends Stmt
 case class Continue() extends Stmt
+case class FunctionDec(name: Token, params: ArrayBuffer[Token], body: ArrayBuffer[Stmt]) extends Stmt
+// Not necessary since introduction of Lambda functions.
+case class Return(keyword: Token, value: Expr) extends Stmt

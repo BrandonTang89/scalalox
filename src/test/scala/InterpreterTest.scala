@@ -210,4 +210,72 @@ class InterpreterTest extends AnyFunSuite {
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 10)
     assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)) == 5)
   }
+
+  test("Interpreter Test 21: Calling Native Functions") {
+    val text: String = "var a = clock() - clock();"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] < 1)
+  }
+
+  test("Interpreter Test 22: Declaring and Using Functions") {
+    val text: String = "fun f(a){return a+2;} var a = f(1);"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 3)
+  }
+
+  test("Interpreter Test 23: Recursive Functions") {
+    val text: String = "fun f(n){if (n <= 1) return n; return f(n-2) + f(n-1);} var a = f(5);"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 5)
+  }
+
+  test("Interpreter Test 24: Closures") {
+    val text: String = "fun makeCounter() {var i = 0;fun count(){i = i + 1;return i;}return count;}" +
+                       "var counter = makeCounter();var a = counter();var b =counter();"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 1)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)).asInstanceOf[Double] == 2)
+  }
+
+  test("Interpreter Test 25: Lambda Functions") {
+    val text: String = "var a = fun (x) {return x*2;}(2);"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 4)
+  }
+
+   test ("Interpreter Test 25.1: Lambda Functions") {
+    val text: String = "var a = fun (x) {return x*2;}; var b = a(10);"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)).asInstanceOf[Double] == 20)
+  }
+
+  test("Interpreter Test 25.2: Lambda Functions") {
+    val text: String = "fun thrice(fn) {var x = 1; for (var i = 1; i <= 3; i = i + 1) {x = fn(x);} return x;}" +
+                       "var a = thrice(fun (a) {return a*2;});"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 8)
+  }
+
+  test("Interpreter Test 25.3: Lambda Functions") {
+    val text: String = "var a = (1 < 2 ? fun (a){return a*2;} : fun(a){return a/2;})(1);"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val interpreter: Interpreter = Interpreter()
+    interpreter.interpret(parser.parse())
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 2)
+  }
+
 }
