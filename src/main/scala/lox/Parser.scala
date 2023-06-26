@@ -5,8 +5,6 @@ import lox.TokenType.*
 import collection.mutable.ArrayBuffer
 class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = false) {
   private var index: Int = 0
-  private var withinLoop: Int = 0
-  private var withinFunction: Int = 0
   /** Program Grammar
    * program → declaration* EOF; */
   def parse(): ArrayBuffer[Stmt] =
@@ -103,8 +101,6 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
    *  statement → exprStmt | ifStmt | printStmt |
    *              forStmt | whileStmt | breakStatement | continueStatement |
    *              returnStatement | block;
-   *  break and continue statements can only be written for statements within a loop body
-   *  (checked with a global variable).
    */
   private def statement(): Stmt = {
     if matches(PRINT) then printStatement()
@@ -120,8 +116,6 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
 
   private def returnStatement(): Stmt = {
     val keyword: Token = previous()
-    if withinFunction == 0 then
-      error(keyword, "Unexpected 'return' outside a function definition.")
     var value: Expr = null
     if !check(SEMICOLON) then value = expression()
     consume(SEMICOLON, "Expect ';' after return value.")
@@ -133,17 +127,15 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
    *  breakStatement → "break" ";";
    *  continueStatement → "continue" ";";*/
   private def breakStatement(): Stmt = {
-    if withinLoop == 0 then
-      error(previous(), "Unexpected 'break' outside a loop.")
+    val keyword: Token = previous()
     consume(SEMICOLON, "Expect ';' after 'break'.")
-    Break()
+    Break(keyword)
   }
 
   private def continueStatement(): Stmt = {
-    if withinLoop == 0 then
-      error(previous(), "Unexpected 'continue' outside a loop.")
+    val keyword: Token = previous()
     consume(SEMICOLON, "Expect ';' after 'continue'.")
-    Continue()
+    Continue(keyword)
   }
 
   /** ForStmt Grammar
@@ -163,9 +155,7 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
     if !check(RIGHT_PAREN) then increment = expression()
     consume(RIGHT_PAREN, "Expect ')' after for clauses.")
 
-    withinLoop += 1
     var body: Stmt = statement()
-    withinLoop -= 1
 
     // Desugaring
     if increment != null then
@@ -187,9 +177,7 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
     consume(LEFT_PAREN, "Expect '(' after 'while'.")
     val condition: Expr = expression()
     consume(RIGHT_PAREN, "Expect ')' after while condition.")
-    withinLoop += 1
     val body: Stmt = statement()
-    withinLoop -= 1
     While(condition, body)
   }
 
@@ -450,9 +438,7 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
       do ()
     consume(RIGHT_PAREN, "Expect ')' after parameters.")
     consume(LEFT_BRACE, "Expect '{' before " + kind + " body.")
-    withinFunction += 1
     val body: ArrayBuffer[Stmt] = block()
-    withinFunction -= 1
     Lambda(keyword, parameters, body)
   }
 

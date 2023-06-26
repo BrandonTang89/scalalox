@@ -84,18 +84,4 @@ class ParserTest extends AnyFunSuite {
     assert(parser.expression().toString == "(+ (+ x y) 3.0)")
   }
 
-  test("Parser Test 7: Continue without A Loop") {
-    val text: String = "var a = 1; continue;"
-    val parser: Parser = Parser(Scanner(text).scanTokens())
-    parser.parse()
-    assert(Lox.hadError)
-  }
-
-  test("Parser Test 8: Break without A Loop") {
-    val text: String = "var a = 1; break;"
-    val parser: Parser = Parser(Scanner(text).scanTokens())
-    parser.parse()
-    assert(Lox.hadError)
-  }
-
 }

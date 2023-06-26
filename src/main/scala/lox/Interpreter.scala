@@ -9,6 +9,7 @@ import scala.collection.mutable.ArrayBuffer
 class Interpreter{
   private val globals: Environment = Environment()
   private val locals: mutable.HashMap[Int, Int] = mutable.HashMap[Int, Int]()
+  var environment: Environment = globals
 
   // Native Functions
   globals.define("clock", new LoxCallable{
@@ -19,7 +20,13 @@ class Interpreter{
     override def toString: String = "<native clock fn>"
   })
 
-  var environment: Environment = globals
+  // Scoping Resolution
+  def resolve(expr: Expr, depth: Int): Unit = {
+    expr match
+      case Variable(n, i) => locals.put(i, depth)
+      case Assign(n, v, i) => locals.put(i, depth)
+  }
+
   def interpret(statements: ArrayBuffer[Stmt]): Unit = {
     try
       for statement <- statements do
@@ -28,53 +35,20 @@ class Interpreter{
       case error: RuntimeError => Lox.runtimeError(error)
   }
 
-  def resolve(expr: Expr, depth: Int): Unit = {
-    expr match
-      case Variable(n, i) => locals.put(i, depth)
-      case Assign(n, v, i) => locals.put(i, depth)
-  }
-
   // Statement Execution
   def execute(stmt: Stmt): Unit = {
     stmt match
-      case stmt: Expression => visitExpressionStmt(stmt)
-      case stmt: Print => visitPrintStmt(stmt)
-      case stmt: Var => visitVarStmt(stmt)
       case stmt: Block => visitBlockStmt(stmt)
-      case stmt: If => visitIfStmt(stmt)
-      case stmt: While => visitWhileStmt(stmt)
       case stmt: Break => throw Interpreter.loopBreakException(stmt)
       case stmt: Continue => throw Interpreter.loopContinueException(stmt)
+      case stmt: Expression => visitExpressionStmt(stmt)
+      // case stmt: FunctionDec => visitFunctionDeclStmt(stmt)
+      case stmt: If => visitIfStmt(stmt)
+      case stmt: Print => visitPrintStmt(stmt)
       case stmt: Return => visitReturnStmt(stmt)
-      case stmt: FunctionDec => visitFunctionDeclStmt(stmt)
+      case stmt: Var => visitVarStmt(stmt)
+      case stmt: While => visitWhileStmt(stmt)
   }
-
-  private def visitReturnStmt(stmt: Return): Unit = {
-    var value: Any = null
-    if stmt.value != null then value = evaluate(stmt.value)
-    throw ReturnException(value)
-  }
-
-  /** Deprecated function Declaration (replaced with variable assignment to lambdas)*/
-  private def visitFunctionDeclStmt(stmt: FunctionDec): Unit = {
-    val function: LoxFunction = LoxFunction(stmt.name, Lambda(stmt.name, stmt.params, stmt.body), environment)
-    environment.define(stmt.name.lexeme, function)
-  }
-
-  private def visitWhileStmt(stmt: While): Unit = {
-    while isTruthy(evaluate(stmt.condition)) do
-      try
-        execute(stmt.body)
-      catch
-        case e: Interpreter.loopBreakException => return
-        case e: Interpreter.loopContinueException => // just continue
-  }
-  private def visitIfStmt(stmt: If): Unit = {
-    if isTruthy(evaluate(stmt.condition)) then
-      execute(stmt.thenBranch)
-    else if stmt.elseBranch != null then execute(stmt.elseBranch)
-  }
-
   private def visitBlockStmt(stmt: Block): Unit = {
     executeBlock(stmt.statements, Environment(environment))
   }
@@ -90,6 +64,35 @@ class Interpreter{
   private def visitExpressionStmt(stmt: Expression): Unit = {
     evaluate(stmt.expression)
   }
+
+  private def visitReturnStmt(stmt: Return): Unit = {
+    var value: Any = null
+    if stmt.value != null then value = evaluate(stmt.value)
+    throw ReturnException(value)
+  }
+
+  /** Deprecated function Declaration (replaced with variable assignment to lambdas)*/
+  /*
+  private def visitFunctionDeclStmt(stmt: FunctionDec): Unit = {
+    val function: LoxFunction = LoxFunction(stmt.name, Lambda(stmt.name, stmt.params, stmt.body), environment)
+    environment.define(stmt.name.lexeme, function)
+  }
+  */
+
+  private def visitWhileStmt(stmt: While): Unit = {
+    while isTruthy(evaluate(stmt.condition)) do
+      try
+        execute(stmt.body)
+      catch
+        case e: Interpreter.loopBreakException => return
+        case e: Interpreter.loopContinueException => // just continue
+  }
+  private def visitIfStmt(stmt: If): Unit = {
+    if isTruthy(evaluate(stmt.condition)) then
+      execute(stmt.thenBranch)
+    else if stmt.elseBranch != null then execute(stmt.elseBranch)
+  }
+
   private def visitPrintStmt(stmt: Print): Unit = {
     val value: Any = evaluate(stmt.expression)
     println(stringify(value))
@@ -104,16 +107,16 @@ class Interpreter{
   @tailrec
   final def evaluate(expr: Expr): Any = {
     expr match
+      case expr: Assign => visitAssignExpr(expr)
       case expr: Binary => visitBinaryExpr(expr)
+      case expr: Call => visitCallExpr(expr)
       case Grouping(e) => evaluate(e)
       case Literal(v) => v
-      case expr: Unary => visitUnary(expr)
+      case expr: Lambda => visitLambdaExpr(expr)
+      case expr: Logical => visitLogicalExpr(expr)
       case expr: Ternary => visitTernaryExpr(expr)
       case expr: Variable => visitVariableExpr(expr)
-      case expr: Assign => visitAssignExpr(expr)
-      case expr: Logical => visitLogicalExpr(expr)
-      case expr: Call => visitCallExpr(expr)
-      case expr: Lambda => visitLambdaExpr(expr)
+      case expr: Unary => visitUnary(expr)
   }
 
   private def visitLambdaExpr(expr: Lambda): Any = {
@@ -221,12 +224,8 @@ class Interpreter{
   }
 
   private def visitVariableExpr(expr: Variable): Any = lookUpVariable(expr.name, expr)
-  private def lookUpVariable(name: Token, expr: Expr): Any = {
-    val dist: Option[Int] = expr match
-      case Variable(name, index) =>
-        // println("Looking up " + name + " index " + index + " dist " + locals.getOrElse(index, -1))
-        locals.get(index)
-
+  private def lookUpVariable(name: Token, expr: Variable): Any = {
+    val dist: Option[Int] = locals.get(expr.index)
     dist match
       case None => globals.get(name)
       case Some(d) => environment.getAt(d, name)
