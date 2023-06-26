@@ -4,7 +4,7 @@ import lox.TokenType.*
 
 import collection.mutable.ArrayBuffer
 class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = false) {
-
+  private var index: Int = 0
   private var withinLoop: Int = 0
   private var withinFunction: Int = 0
   /** Program Grammar
@@ -269,7 +269,9 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
       expr match
         case expr: Variable =>
           val name: Token = expr.name
-          Assign(name, value)
+          index += 1
+          Assign(name, value, index-1)
+
         case _ =>
           error(equals, "Invalid assignment target.")
           expr
@@ -403,7 +405,9 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
     else if matches(TRUE) then Literal(true)
     else if matches(NIL) then Literal(null)
     else if matches(NUMBER, STRING) then Literal(previous().literal)
-    else if matches(IDENTIFIER) then Variable(previous())
+    else if matches(IDENTIFIER) then
+      index += 1
+      Variable(previous(), index-1)
     else if matches(LEFT_PAREN) then
       val expr: Expr = expression()
       consume(RIGHT_PAREN, "Expect ')' after expression.")

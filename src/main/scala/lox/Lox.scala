@@ -43,7 +43,11 @@ object Lox {
     val parser: Parser = Parser(tokens, parseExpressions = true)
     val statements: ArrayBuffer[Stmt] = parser.parse()
 
-    if !hadError then interpreter.interpret(statements)
+    if !hadError then
+      val resolver: Resolver = Resolver(interpreter)
+      resolver.resolve(statements)
+    if !hadError then
+      interpreter.interpret(statements)
   }
 
   def runtimeError(error: RuntimeError): Unit = {

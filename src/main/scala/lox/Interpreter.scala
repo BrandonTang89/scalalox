@@ -3,10 +3,13 @@ package lox
 import lox.TokenType.*
 
 import scala.annotation.tailrec
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 class Interpreter{
-  val globals: Environment = Environment()
+  private val globals: Environment = Environment()
+  private val locals: mutable.HashMap[Int, Int] = mutable.HashMap[Int, Int]()
+
   // Native Functions
   globals.define("clock", new LoxCallable{
     def arity: Int = 0
@@ -16,7 +19,6 @@ class Interpreter{
     override def toString: String = "<native clock fn>"
   })
 
-
   var environment: Environment = globals
   def interpret(statements: ArrayBuffer[Stmt]): Unit = {
     try
@@ -24,6 +26,12 @@ class Interpreter{
           execute(statement)
     catch
       case error: RuntimeError => Lox.runtimeError(error)
+  }
+
+  def resolve(expr: Expr, depth: Int): Unit = {
+    expr match
+      case Variable(n, i) => locals.put(i, depth)
+      case Assign(n, v, i) => locals.put(i, depth)
   }
 
   // Statement Execution
@@ -38,7 +46,7 @@ class Interpreter{
       case stmt: Break => throw Interpreter.loopBreakException(stmt)
       case stmt: Continue => throw Interpreter.loopContinueException(stmt)
       case stmt: Return => visitReturnStmt(stmt)
-      // case stmt: FunctionDec => visitFunctionDeclStmt(stmt)
+      case stmt: FunctionDec => visitFunctionDeclStmt(stmt)
   }
 
   private def visitReturnStmt(stmt: Return): Unit = {
@@ -47,12 +55,11 @@ class Interpreter{
     throw ReturnException(value)
   }
 
-  /** Deprecated function Declaration (replaced with variable assignment to lambdas)
+  /** Deprecated function Declaration (replaced with variable assignment to lambdas)*/
   private def visitFunctionDeclStmt(stmt: FunctionDec): Unit = {
     val function: LoxFunction = LoxFunction(stmt.name, Lambda(stmt.name, stmt.params, stmt.body), environment)
     environment.define(stmt.name.lexeme, function)
   }
-  */
 
   private def visitWhileStmt(stmt: While): Unit = {
     while isTruthy(evaluate(stmt.condition)) do
@@ -126,7 +133,11 @@ class Interpreter{
   }
   private def visitAssignExpr(expr: Assign): Any = {
     val value: Any = evaluate(expr.value)
-    environment.assign(expr.name, value)
+
+    locals.get(expr.index) match
+      case None => globals.assign(expr.name, value)
+      case Some(distance) => environment.assignAt(distance, expr.name, value)
+
     value
   }
   private def visitTernaryExpr(expr: Ternary): Any = {
@@ -209,7 +220,17 @@ class Interpreter{
       case _ => throw RuntimeError(expr.paren, "Can only call functions and classes.")
   }
 
-  private def visitVariableExpr(expr: Variable): Any = environment.get(expr.name)
+  private def visitVariableExpr(expr: Variable): Any = lookUpVariable(expr.name, expr)
+  private def lookUpVariable(name: Token, expr: Expr): Any = {
+    val dist: Option[Int] = expr match
+      case Variable(name, index) =>
+        // println("Looking up " + name + " index " + index + " dist " + locals.getOrElse(index, -1))
+        locals.get(index)
+
+    dist match
+      case None => globals.get(name)
+      case Some(d) => environment.getAt(d, name)
+  }
 
   // Helper Functions
   private def isTruthy(obj: Any): Boolean = {

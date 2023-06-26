@@ -1,6 +1,8 @@
+import lox.Lox.interpreter
 import lox.TokenType.IDENTIFIER
 import org.scalatest.funsuite.AnyFunSuite
-import lox.{Interpreter, Parser, RuntimeError, Scanner, Token, Stmt}
+import lox.{Interpreter, Parser, Resolver, RuntimeError, Scanner, Stmt, Token}
+
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -172,32 +174,44 @@ class InterpreterTest extends AnyFunSuite {
   test("Interpreter Test 17: For Loop") {
     val text: String = "var a = 1; for (var i = 0; i < 10; i = i + 1) a = a * 2;"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 1024)
   }
 
   test("Interpreter Test 18: While Loop") {
     val text: String = "var a = 1; while (a < 10) a = a + 1;"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 10)
   }
 
   test("Interpreter Test 19: While Loop with Break") {
     val text: String = "var a = 1; while (a < 10) {a = a + 1; if (a == 5) break;}"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 5)
   }
 
   test("Interpreter Test 19.1: While Loop with Break") {
     val text: String = "var a = 1; var b = 1; while (a < 10) {while (b < 10) {if (b == 5) break; else b = b + 1;} a = a + 1; }"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 10)
     assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)) == 5)
   }
@@ -205,8 +219,11 @@ class InterpreterTest extends AnyFunSuite {
   test("Interpreter Test 20: While Loop with Continue") {
     val text: String = "var a = 0; var b = 0; while (a < 10) {a = a + 1; if (a <= 5) continue; b = b + 1;  }"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 10)
     assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)) == 5)
   }
@@ -214,24 +231,33 @@ class InterpreterTest extends AnyFunSuite {
   test("Interpreter Test 21: Calling Native Functions") {
     val text: String = "var a = clock() - clock();"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] < 1)
   }
 
   test("Interpreter Test 22: Declaring and Using Functions") {
     val text: String = "fun f(a){return a+2;} var a = f(1);"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 3)
   }
 
   test("Interpreter Test 23: Recursive Functions") {
     val text: String = "fun f(n){if (n <= 1) return n; return f(n-2) + f(n-1);} var a = f(5);"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 5)
   }
 
@@ -239,8 +265,11 @@ class InterpreterTest extends AnyFunSuite {
     val text: String = "fun makeCounter() {var i = 0;fun count(){i = i + 1;return i;}return count;}" +
                        "var counter = makeCounter();var a = counter();var b =counter();"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 1)
     assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)).asInstanceOf[Double] == 2)
   }
@@ -248,16 +277,22 @@ class InterpreterTest extends AnyFunSuite {
   test("Interpreter Test 25: Lambda Functions") {
     val text: String = "var a = fun (x) {return x*2;}(2);"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 4)
   }
 
    test ("Interpreter Test 25.1: Lambda Functions") {
     val text: String = "var a = fun (x) {return x*2;}; var b = a(10);"
-    val parser: Parser = Parser(Scanner(text).scanTokens())
-    val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+     val parser: Parser = Parser(Scanner(text).scanTokens())
+     val statements = parser.parse()
+     val interpreter: Interpreter = Interpreter()
+     val resolver: Resolver = Resolver(interpreter)
+     resolver.resolve(statements)
+     interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)).asInstanceOf[Double] == 20)
   }
 
@@ -265,17 +300,47 @@ class InterpreterTest extends AnyFunSuite {
     val text: String = "fun thrice(fn) {var x = 1; for (var i = 1; i <= 3; i = i + 1) {x = fn(x);} return x;}" +
                        "var a = thrice(fun (a) {return a*2;});"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 8)
   }
 
   test("Interpreter Test 25.3: Lambda Functions") {
     val text: String = "var a = (1 < 2 ? fun (a){return a*2;} : fun(a){return a/2;})(1);"
     val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
     val interpreter: Interpreter = Interpreter()
-    interpreter.interpret(parser.parse())
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 2)
+  }
+
+  test("Interpreter Test 25.4: Lambda Functions") {
+    val text: String = "var f = fun(a){if (a<=1) return a; return f(a-1) + f(a-2);}; var a = f(5);"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)).asInstanceOf[Double] == 5)
+  }
+
+  test("Interpreter Test 26: Properly Closed Functions") {
+    val text: String = "var a = \"global\"; var b; var c;{fun retA() {return a;}b = retA();var a = \"block\";c = retA();}"
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "b", null, 1)) == "global")
+    assert(interpreter.environment.get(Token(IDENTIFIER, "c", null, 1)) == "global")
+
   }
 
 }
