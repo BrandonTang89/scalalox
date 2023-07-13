@@ -1,0 +1,7 @@
+class Bacon { // test with run src/test/SampleLox7.lox from sbt shell
+  eat() {
+    print "Crunch crunch crunch!";
+  }
+}
+
+Bacon().eat(); // Prints "Crunch crunch crunch!".

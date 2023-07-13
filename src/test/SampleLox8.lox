@@ -1,0 +1,17 @@
+class Circle { // test with run src/test/SampleLox8.lox from sbt shell
+  init(radius) { // constructor
+    this.radius = radius;
+  }
+
+  area { // getter
+    return 3.141592653 * this.radius * this.radius;
+  }
+
+  scale(factor){ // method
+    this.radius = this.radius * factor;
+  }
+}
+
+var circle = Circle(2);
+circle.scale(2);
+print circle.area; // Prints roughly "50.2655".

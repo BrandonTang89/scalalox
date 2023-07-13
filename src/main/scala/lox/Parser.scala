@@ -2,7 +2,7 @@ package lox
 import lox.Parser.ParseError
 import lox.TokenType.*
 
-import collection.mutable.ArrayBuffer
+import collection.mutable.{ArrayBuffer, ArrayStack}
 class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = false) {
   private var index: Int = 0
   /** Program Grammar
@@ -52,16 +52,32 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
 
 
   /** Declaration Grammar
-   *  declaration → funDecl | varDecl | statement */
+   *  declaration → funDecl | varDecl | classDecl | statement */
   def declaration(): Stmt = {
     try
       if matches(VAR) then varDeclaration()
       else if matches(FUN) then function("function")
+      else if matches(CLASS) then classDeclaration()
       else statement()
     catch
       case error: ParseError =>
         synchronize()
         null
+  }
+
+  /** Class Declaration
+   *  classDecl → "class" IDENTIFIER "{" function* "}"; */
+  private def classDeclaration(): Stmt = {
+    val name: Token = consume(IDENTIFIER, "Expect class name.")
+    consume(LEFT_BRACE, "Expect '{' before class body.")
+    val methods: ArrayBuffer[Var] = ArrayBuffer[Var]()
+
+    while !check(RIGHT_BRACE) && !isAtEnd do
+      val fn = function("method").asInstanceOf[Var]
+      methods.addOne(fn)
+
+    consume(RIGHT_BRACE, "Expect '}' after class body.")
+    Class(name, methods)
   }
 
   /** Fun Declaration
@@ -75,12 +91,14 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
     var name: Token = null
     if check(IDENTIFIER) then
       name = consume(IDENTIFIER, "") // absorb the name
-      val lambda:Lambda = lambdaFunction(kind)
+      val lambda: Lambda = lambdaFunction(kind)
       Var(name, Some(lambda))
-    else
+    else if kind == "fun" then
       // Expression Statement
       moveBack() // Get back to fun, with the knowledge that we aren't at a declaration
       expressionStatement()
+    else // kind == "method", we require a method identifier
+      throw error(previous(), "Expected method identifier.")
   }
 
 
@@ -241,7 +259,7 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
   }
 
   /** Assignment Grammar
-   *  assignment → IDENTIFIER "=" assignment | Ternary
+   *  assignment → (call ".")? IDENTIFIER "=" assignment | Ternary
    *
    *  Right associative
    *  Allows for multiple assignments: a = b = c = 10 is a = (b = (c = 10))
@@ -259,6 +277,9 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
           val name: Token = expr.name
           index += 1
           Assign(name, value, index-1)
+
+        case get: Get => // assign to a field of a class
+          Set(get.loxObject, get.name, value)
 
         case _ =>
           error(equals, "Invalid assignment target.")
@@ -364,14 +385,19 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
     else call()
   }
   /** Call Grammar
-   *  call → primary ("(" arguments? ")")*;
+   *  call → primary ("(" arguments? ")" | "." IDENTIFIER )*;
    *  arguments -> assignment ("," assignment)*;
    */
   private def call(): Expr = {
     var expr: Expr = primary()
-    while matches(LEFT_PAREN) do
-      expr = finishCall(expr)
-    expr
+    while true do
+      if matches(LEFT_PAREN) then
+        expr = finishCall(expr)
+      else if matches(DOT) then
+        val name: Token = consume(IDENTIFIER, "Expect property name after '.' .")
+        expr = Get(expr, name)
+      else return expr
+    null // unreached
   }
   private def finishCall(callee: Expr): Expr = {
     val arguments: ArrayBuffer[Expr] = ArrayBuffer[Expr]()
@@ -393,6 +419,9 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
     else if matches(TRUE) then Literal(true)
     else if matches(NIL) then Literal(null)
     else if matches(NUMBER, STRING) then Literal(previous().literal)
+    else if matches(THIS) then
+      index += 1
+      This(previous(), index-1)
     else if matches(IDENTIFIER) then
       index += 1
       Variable(previous(), index-1)
@@ -426,20 +455,28 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
     else throw error(peek(), "Expect expression.")
   }
   private def lambdaFunction(kind: String): Lambda = {
-    val keyword: Token = previous() // either 'fun' or function name
-    consume(LEFT_PAREN, "Expect '(' after " + kind + " name or declaration.")
+    val keyword: Token = previous() // either 'fun' (for anonymous functions) or function/method name
+    //println("kind " + kind)
+    // println("name " + keyword.lexeme)
+
+    var fnType: String = kind
     val parameters: ArrayBuffer[Token] = ArrayBuffer[Token]()
-    if !check(RIGHT_PAREN) then
-      while
-        if parameters.size >= 255 then
-          error(peek(), "Can't have more than 255 parameters.")
-        parameters.addOne(consume(IDENTIFIER, "Expect parameter name."))
-        matches(COMMA)
-      do ()
-    consume(RIGHT_PAREN, "Expect ')' after parameters.")
+    if kind != "method" || peek().tokenType == LEFT_PAREN then
+      // println("normal Method")
+      consume(LEFT_PAREN, "Expect '(' after " + kind + " name or declaration.")
+      if !check(RIGHT_PAREN) then
+        while
+          if parameters.size >= 255 then
+            error(peek(), "Can't have more than 255 parameters.")
+          parameters.addOne(consume(IDENTIFIER, "Expect parameter name."))
+          matches(COMMA)
+        do ()
+      consume(RIGHT_PAREN, "Expect ')' after parameters.")
+    else
+      fnType = "getter"
     consume(LEFT_BRACE, "Expect '{' before " + kind + " body.")
     val body: ArrayBuffer[Stmt] = block()
-    Lambda(keyword, parameters, body)
+    Lambda(keyword, parameters, body, fnType)
   }
 
   // Parser Error Handling

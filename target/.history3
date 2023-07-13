@@ -12,3 +12,11 @@
 1687686063726:run src/test/SampleLox5.lox
 1687687363024:test
 1687778664412:;set _root_.scala.collection.Seq(historyPath := None,shellPrompt := { _ => "" },SettingKey[_root_.scala.Option[_root_.sbt.File]]("sbtStructureOutputFile") in _root_.sbt.Global := _root_.scala.Some(_root_.sbt.file("C:/Users/tangy/AppData/Local/Temp/sbt-structure.xml")),SettingKey[_root_.java.lang.String]("sbtStructureOptions") in _root_.sbt.Global := "download, resolveClassifiers");apply -cp "C:/Users/tangy/AppData/Roaming/JetBrains/IntelliJIdea2023.1/plugins/Scala/repo/org/jetbrains/scala/sbt-structure-extractor_2.12_1.0/2023.1.0/sbt-structure-extractor-2023.1.0.jar" org.jetbrains.sbt.CreateTasks;preferScala2;*/*:dumpStructure
+1689073004150:test
+1689073018499:run
+1689127544173:run src/test/6.lox
+1689127549226:run src/test/SampleLox6.lox
+1689132042001:test
+1689134022427:run src/test/SampleLox7.lox
+1689214042562:test
+1689219289964:run src/test/SampleLox8.lox

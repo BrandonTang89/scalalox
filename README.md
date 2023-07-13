@@ -138,6 +138,30 @@ var a = counter(); // 1
 var b = counter(); // 2
 ```
 This works since the `i` is captured by the closure of count.
+
+## Classes
+Lox supports classes with constructors, methods and getters. Fields are
+set dynamically at runtime. There is currently no support for static functions
+or fields.
+```
+class Circle {
+  init(radius) { // constructor
+    this.radius = radius;
+  }
+
+  area { // getter
+    return 3.141592653 * this.radius * this.radius;
+  }
+  
+  scale(factor){ // method
+    this.radius = this.radius * factor;
+  }
+}
+
+var circle = Circle(2);
+circle.scale(2);
+print circle.area; // Prints roughly "50.2655".
+```
 ## Grammar
 Will be filled in once everything is much more finalised.
 
@@ -158,3 +182,6 @@ Compared to the tree-walk interpreter in the book, I'm attempting to do the chal
 - Added continue and break statements for usage within loops.
 - Added lambda functions.
   - Replaced regular functions with syntactic sugar for lambdas.
+- Added getters for classes
+  - These are kind of like syntactic sugar for 0 arity functions
+  - They are still shadowed by fields of the same name

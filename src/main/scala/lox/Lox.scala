@@ -35,7 +35,7 @@ object Lox {
 
   private val interpreter: Interpreter = Interpreter()
   var hadError: Boolean = false
-  private var hadRuntimeError: Boolean = false
+  var hadRuntimeError: Boolean = false
   private def run(source: String): Unit = {
     val scanner: Scanner = Scanner(source)
     val tokens: ArrayBuffer[Token] = scanner.scanTokens()

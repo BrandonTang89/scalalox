@@ -25,6 +25,7 @@ class Interpreter{
     expr match
       case Variable(n, i) => locals.put(i, depth)
       case Assign(n, v, i) => locals.put(i, depth)
+      case This(k, i) => locals.put(i, depth)
   }
 
   def interpret(statements: ArrayBuffer[Stmt]): Unit = {
@@ -48,6 +49,19 @@ class Interpreter{
       case stmt: Return => visitReturnStmt(stmt)
       case stmt: Var => visitVarStmt(stmt)
       case stmt: While => visitWhileStmt(stmt)
+      case stmt: Class => visitClassStmt(stmt)
+  }
+  private def visitClassStmt(stmt: Class): Unit = {
+    environment.define(stmt.name.lexeme, null) // define first
+
+    val methods: mutable.Map[String, LoxFunction] = mutable.Map[String, LoxFunction]()
+    for (method <- stmt.methods) do
+      val function: LoxFunction = LoxFunction(method.name, method.initializer.get.asInstanceOf[Lambda],
+        environment, method.name.lexeme.equals("init"))
+      methods(method.name.lexeme) = function
+
+    val klass: LoxClass = LoxClass(stmt.name.lexeme, methods) // allow for self-reference
+    environment.assign(stmt.name, klass)
   }
   private def visitBlockStmt(stmt: Block): Unit = {
     executeBlock(stmt.statements, Environment(environment))
@@ -117,10 +131,13 @@ class Interpreter{
       case expr: Ternary => visitTernaryExpr(expr)
       case expr: Variable => visitVariableExpr(expr)
       case expr: Unary => visitUnary(expr)
+      case expr: Get => visitGetExpr(expr)
+      case expr: Set => visitSetExpr(expr)
+      case expr: This => visitThisExpr(expr)
   }
 
   private def visitLambdaExpr(expr: Lambda): Any = {
-    LoxFunction(expr.keyword, expr, environment)
+    LoxFunction(expr.keyword, expr, environment, false)
   }
 
   /** Returns an object with the same truthiness value as the boolean
@@ -223,13 +240,48 @@ class Interpreter{
       case _ => throw RuntimeError(expr.paren, "Can only call functions and classes.")
   }
 
+  private def visitGetExpr(expr: Get): Any = {
+    val loxObject: Any = evaluate(expr.loxObject)
+    loxObject match
+      case instance: LoxInstance => instance.get(expr.name, this)
+      case _ => throw RuntimeError(expr.name, "Only instances have properties.")
+  }
+
+  private def visitSetExpr(expr: Set): Any = {
+    val loxObject: Any = evaluate(expr.loxObject)
+    loxObject match
+      case instance: LoxInstance =>
+        val value: Any = evaluate(expr.value)
+        instance.set(expr.name, value)
+        value
+      case _ => throw RuntimeError(expr.name, "Only instances have fields.")
+  }
+
+  private def visitThisExpr(expr: This): Any = {
+    lookUpVariable(expr.keyword, expr)
+  }
+
   private def visitVariableExpr(expr: Variable): Any = lookUpVariable(expr.name, expr)
+
+  private def lookUpVariable(name: Token, expr: LookUpable): Any = {
+    val dist: Option[Int] = locals.get(expr.index)
+    dist match
+      case None => globals.get(name)
+      case Some(d) => environment.getAt(d, name)
+  }
+  /*
   private def lookUpVariable(name: Token, expr: Variable): Any = {
     val dist: Option[Int] = locals.get(expr.index)
     dist match
       case None => globals.get(name)
       case Some(d) => environment.getAt(d, name)
   }
+  private def lookUpVariable(name: Token, expr: This): Any = {
+    val dist: Option[Int] = locals.get(expr.index)
+    dist match
+      case None => globals.get(name)
+      case Some(d) => environment.getAt(d, name)
+  }*/
 
   // Helper Functions
   private def isTruthy(obj: Any): Boolean = {

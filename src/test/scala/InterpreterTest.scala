@@ -456,4 +456,99 @@ class InterpreterTest extends AnyFunSuite {
     assert(Lox.hadError)
   }
 
+  test("Interpreter Test 29: Class Fields Getting and Setting") {
+    val text: String = "class a{} var b = a(); b.num = 1; var c = b.num;"
+    Lox.hadError = false
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(!Lox.hadError)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "c", null, 1)).asInstanceOf[Double] == 1)
+  }
+
+  test("Interpreter Test 29.1: Try to get unset field") {
+    val text: String = "class a{} var b = a(); b.num = 1; var c = b.dun;"
+    Lox.hadError = false
+    Lox.hadRuntimeError = false
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(!Lox.hadError)
+    assert(Lox.hadRuntimeError)
+  }
+
+  test("Interpreter Test 30: Calling a method") {
+    val text: String = "class a{ m(){return 2;} } var b = a(); b.num = 1; var c = b.m();"
+    Lox.hadError = false
+    Lox.hadRuntimeError = false
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(!Lox.hadError)
+    assert(!Lox.hadRuntimeError)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "c", null, 1)).asInstanceOf[Double] == 2)
+  }
+
+  test("Interpreter Test 31: Calling a method with 'this' keyword") {
+    val text: String = "class Cake {taste() {var adjective = \"delicious\";return (\"The \" + this.flavor + \" cake is \" + adjective + \"!\");}}" +
+      "var cake = Cake();cake.flavor = \"German chocolate\";" +
+      "var a = cake.taste();"
+    Lox.hadError = false
+    Lox.hadRuntimeError = false
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(!Lox.hadError)
+    assert(!Lox.hadRuntimeError)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == "The German chocolate cake is delicious!")
+  }
+
+  test("Interpreter Test 32: Class with initializer") {
+    val text: String = "class Cake {init(){this.flavor = \"German chocolate\";} " +
+      "taste() {var adjective = \"delicious\";return (\"The \" + this.flavor + \" cake is \" + adjective + \"!\");}}" +
+      "var cake = Cake();" +
+      "var a = cake.taste();"
+    Lox.hadError = false
+    Lox.hadRuntimeError = false
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(!Lox.hadError)
+    assert(!Lox.hadRuntimeError)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == "The German chocolate cake is delicious!")
+  }
+
+  test("Interpreter Test 33: Class with Getter") {
+    val text: String = "class Circle {init(radius) {this.radius = radius;}" +
+      "area {return 3 * this.radius * this.radius;}}" +
+      "var circle = Circle(4);" +
+      "var a = circle.area;"
+    Lox.hadError = false
+    Lox.hadRuntimeError = false
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(!Lox.hadError)
+    assert(!Lox.hadRuntimeError)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 48)
+  }
+
 }

@@ -1,0 +1,10 @@
+class DevonshireCream {  // test with run src/test/SampleLox6.lox from sbt shell
+  serveOn() {
+    return "Scones";
+  }
+}
+
+print DevonshireCream; // Prints "DevonshireCream".
+
+var myIceCream = DevonshireCream();
+print myIceCream; // prints "DevonshireCream instance"

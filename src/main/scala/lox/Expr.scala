@@ -32,7 +32,10 @@ case class Grouping(expression: Expr) extends Expr
 case class Logical(left: Expr, operator: Token, right: Expr) extends Expr
 case class Literal(value: Any) extends Expr
 case class Unary(operator: Token, right: Expr) extends Expr
-case class Variable(name: Token, index: Int) extends Expr
 case class Call(calle: Expr, paren: Token, arguments: ArrayBuffer[Expr]) extends Expr
-case class Lambda(keyword: Token, parameters: ArrayBuffer[Token], body: ArrayBuffer[Stmt]) extends Expr
-
+case class Lambda(keyword: Token, parameters: ArrayBuffer[Token], body: ArrayBuffer[Stmt], fnType: String) extends Expr
+case class Get(loxObject: Expr, name: Token) extends Expr
+class LookUpable(val index: Int) extends Expr
+case class Variable(name: Token, i: Int) extends LookUpable(i) // index for resolution
+case class Set(loxObject: Expr, name:Token, value: Expr) extends Expr
+case class This(keyword: Token, i: Int) extends LookUpable(i) // index for resolution

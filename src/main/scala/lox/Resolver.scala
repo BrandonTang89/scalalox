@@ -5,11 +5,12 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.boundary
 import boundary.break
-import lox.Resolver.{FunctionType, LoopType, localVarStatus}
+import lox.Resolver.{ClassType, FunctionType, LoopType, localVarStatus}
 
 class Resolver(val interpreter: Interpreter) {
   private val scopes: mutable.Stack[mutable.HashMap[String, (Token, localVarStatus)]] = mutable.Stack[mutable.HashMap[String, (Token, localVarStatus)]]()
   private var currentFunction: FunctionType= FunctionType.NONE
+  private var currentClass: ClassType = ClassType.NONE
   private var withinLoop: LoopType = LoopType.NONE
   def resolve(statements: ArrayBuffer[Stmt]): Unit = statements.foreach(resolve)
   private def resolve(stmt: Stmt): Unit = {
@@ -24,6 +25,7 @@ class Resolver(val interpreter: Interpreter) {
       case stmt: Continue => if withinLoop == LoopType.NONE then Lox.error(stmt.keyword, "Unexpected 'continue' outside a loop.")
       case stmt: Return => visitReturnStmt(stmt)
       case stmt: FunctionDec => visitFunctionDeclStmt(stmt)
+      case stmt: Class => visitClassStmt(stmt)
   }
   @tailrec
   private def resolve(expr: Expr): Unit =
@@ -38,6 +40,9 @@ class Resolver(val interpreter: Interpreter) {
       case expr: Logical => visitLogicalExpr(expr)
       case expr: Call => visitCallExpr(expr)
       case expr: Lambda => visitLambdaExpr(expr)
+      case expr: Get => visitGetExpr(expr)
+      case expr: Set => visitSetExpr(expr)
+      case expr: This => visitThisExpr(expr)
 
   // Interesting Visits
   private def beginScope(): Unit =
@@ -45,7 +50,7 @@ class Resolver(val interpreter: Interpreter) {
   private def endScope(): Unit =
     scopes.top.foreach((lexeme, x) => if x._2 != localVarStatus.USED then Lox.error(x._1, "Unused Local Variable."))
     scopes.pop()
-  private def declare(name: Token): Unit =
+  private def declare(name: Token): Unit = // declare a variable in the current scope
     if scopes.nonEmpty then
       if scopes.top.contains(name.lexeme) then Lox.error(name, "Already a variable with this name in this scope.")
       scopes.top.put(name.lexeme, (name, localVarStatus.DECLARED))
@@ -96,9 +101,26 @@ class Resolver(val interpreter: Interpreter) {
   private def visitFunctionDeclStmt(stmt: FunctionDec): Unit =
     declare(stmt.name)
     define(stmt.name)
-    resolveFunction(Lambda(stmt.name, stmt.params, stmt.body), FunctionType.FUNCTION)
+    resolveFunction(Lambda(stmt.name, stmt.params, stmt.body, "function"), FunctionType.FUNCTION)
   private def visitLambdaExpr(lambda: Lambda): Unit =
     resolveFunction(lambda, FunctionType.FUNCTION)
+
+  private def visitClassStmt(stmt: Class): Unit =
+    val enclosingClass: ClassType = currentClass
+    currentClass = ClassType.CLASS
+    declare(stmt.name)
+    define(stmt.name)
+
+    beginScope()
+    scopes.head("this") = (null, localVarStatus.USED) // used by default
+    for (method <- stmt.methods) do
+      var declaration: FunctionType = FunctionType.METHOD
+      if method.name.lexeme == "init" then
+        declaration = FunctionType.INITIALIZER
+      resolveFunction(method.initializer.get.asInstanceOf[Lambda], FunctionType.METHOD)
+
+    endScope()
+    currentClass = enclosingClass
 
   // Uninteresting Visits
   private def visitExpressionStmt(stmt: Expression): Unit = resolve(stmt.expression)
@@ -111,7 +133,11 @@ class Resolver(val interpreter: Interpreter) {
   private def visitReturnStmt(stmt: Return): Unit =
     if currentFunction == FunctionType.NONE then
       Lox.error(stmt.keyword, "Can't return from top-level code.")
-    if stmt.value != null then resolve(stmt.value)
+
+    if stmt.value != null then
+      if currentFunction == FunctionType.INITIALIZER then
+        Lox.error(stmt.keyword, "Can't return a value from an initializer")
+      resolve(stmt.value)
 
   private def visitWhileStmt(stmt: While): Unit =
     val previousLoop: LoopType = withinLoop
@@ -139,13 +165,27 @@ class Resolver(val interpreter: Interpreter) {
     resolve(expr.right)
 
   private def visitUnary(expr: Unary): Unit = resolve(expr.right)
+
+  private def visitGetExpr(expr: Get): Unit = resolve(expr.loxObject)
+  private def visitSetExpr(expr: Set): Unit =
+    resolve(expr.value)
+    resolve(expr.loxObject)
+
+  private def visitThisExpr(expr: This): Unit =
+    if currentClass == ClassType.NONE then
+      Lox.error(expr.keyword, "Can't use 'this' outside of a class.")
+    else
+      resolveLocal(expr, expr.keyword)
 }
+
 
 object Resolver{
   enum localVarStatus:
     case DECLARED, DEFINED, USED
   enum FunctionType:
-    case NONE, FUNCTION
+    case NONE, FUNCTION, METHOD, INITIALIZER
+  enum ClassType:
+    case NONE, CLASS
   enum LoopType:
     case NONE, WHILE
 }

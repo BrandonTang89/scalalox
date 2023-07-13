@@ -1,5 +1,4 @@
 package lox
-
 import scala.collection.mutable.ArrayBuffer
 
 trait Stmt
@@ -14,3 +13,4 @@ case class Continue(keyword: Token) extends Stmt
 case class FunctionDec(name: Token, params: ArrayBuffer[Token], body: ArrayBuffer[Stmt]) extends Stmt
 // Not necessary since introduction of Lambda functions.
 case class Return(keyword: Token, value: Expr) extends Stmt
+case class Class(name: Token, methods: ArrayBuffer[Var]) extends Stmt // The Var list is the list of methods
