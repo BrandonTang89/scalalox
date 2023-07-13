@@ -162,6 +162,29 @@ var circle = Circle(2);
 circle.scale(2);
 print circle.area; // Prints roughly "50.2655".
 ```
+
+We support "method closures" i.e.
+```
+class Circle {
+  init(radius) { // constructor
+    this.radius = radius;
+  }
+
+  area { // getter
+    return 3.141592653 * this.radius * this.radius;
+  }
+  
+  scale(factor){ // method
+    this.radius = this.radius * factor;
+  }
+}
+
+var circle = Circle(2);
+var scaler = circle.scale;
+scaler(2);
+print circle.area; // Prints roughly "50.2655".
+```
+works since the "this" is resolved and bound to correct instance of the class.
 ## Grammar
 Will be filled in once everything is much more finalised.
 

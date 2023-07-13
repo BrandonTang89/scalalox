@@ -1,0 +1,19 @@
+class A { // run src/test/SampleLox9.lox
+  method() {
+    print "A method";
+  }
+}
+
+class B < A {
+  method() {
+    print "B method";
+  }
+
+  test() {
+    super.method();
+  }
+}
+
+class C < B {}
+
+C().test(); // should print "A method"
