@@ -1,0 +1,12 @@
+class vehicle{
+    describe(){
+        return "this is a vehicle";
+    }
+}
+class car < vehicle{
+    describe(){
+        return super.describe() + ", specifically a car";
+    }
+}
+
+print car().describe();

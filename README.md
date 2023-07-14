@@ -185,8 +185,25 @@ scaler(2);
 print circle.area; // Prints roughly "50.2655".
 ```
 works since the "this" is resolved and bound to correct instance of the class.
-## Grammar
-Will be filled in once everything is much more finalised.
+
+### Inheritance
+Like most OOP languages we support implementation inheritance. We only use single inheritance.
+The syntax looks something like:
+```
+class vehicle{
+    describe(){
+        return "this is a vehicle";
+    }
+}
+class car < vehicle{
+    describe(){
+        return super.describe() + ", specifically a car";
+    }
+}
+
+print car().describe();
+// Prints: "this ia vehicle, specifically a car"
+```
 
 # Implementation Details
 ## Differences from Book Version
