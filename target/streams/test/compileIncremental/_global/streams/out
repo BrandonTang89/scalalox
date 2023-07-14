@@ -1,0 +1,63 @@
+[debug] [zinc] IncrementalCompile -----------
+[debug] IncrementalCompile.incrementalCompile
+[debug] previous = Stamps for: 4 products, 4 sources, 5 libraries
+[debug] current source = Set(${BASE}/src/test/scala/ExprTest.scala, ${BASE}/src/test/scala/InterpreterTest.scala, ${BASE}/src/test/scala/ParserTest.scala, ${BASE}/src/test/scala/ScannerTest.scala)
+[debug] > initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(${BASE}/src/test/scala/InterpreterTest.scala), unmodified = ...),Set(${BASE}/target/scala-3.3.0/test-classes/InterpreterTest.class),Set(),API Changes: Set(NamesChange(lox.Resolver,ModifiedNames(changes = UsedName(ClassType,[Default]))), NamesChange(lox.Resolver$,ModifiedNames(changes = UsedName(ClassType,[Default])))))
+[debug] The lox.Resolver has the following regular definitions changed:
+[debug] 	UsedName(ClassType,[Default]).
+[debug] All member reference dependencies will be considered within this context.
+[debug] Files invalidated by inheriting from (external) lox.Resolver: Set()
+[debug] Now invalidating by inheritance (internally).
+[debug] Getting direct dependencies of all classes transitively invalidated by inheritance.
+[debug] Getting classes that directly depend on (external) lox.Resolver.
+[debug] None of the modified names appears in source file of InterpreterTest. This dependency is not being considered for invalidation.
+[debug] The lox.Resolver$ has the following regular definitions changed:
+[debug] 	UsedName(ClassType,[Default]).
+[debug] All member reference dependencies will be considered within this context.
+[debug] Files invalidated by inheriting from (external) lox.Resolver$: Set()
+[debug] Now invalidating by inheritance (internally).
+[debug] Getting direct dependencies of all classes transitively invalidated by inheritance.
+[debug] Getting classes that directly depend on (external) lox.Resolver$.
+[debug] None of the modified names appears in source file of InterpreterTest. This dependency is not being considered for invalidation.
+[debug] 
+[debug] Initial source changes:
+[debug] 	removed: Set()
+[debug] 	added: Set()
+[debug] 	modified: Set(${BASE}/src/test/scala/InterpreterTest.scala)
+[debug] Invalidated products: Set(${BASE}/target/scala-3.3.0/test-classes/InterpreterTest.class)
+[debug] External API changes: API Changes: Set(NamesChange(lox.Resolver,ModifiedNames(changes = UsedName(ClassType,[Default]))), NamesChange(lox.Resolver$,ModifiedNames(changes = UsedName(ClassType,[Default]))))
+[debug] Modified binary dependencies: Set()
+[debug] Initial directly invalidated classes: Set(InterpreterTest)
+[debug] Sources indirectly invalidated by:
+[debug] 	product: Set(${BASE}/src/test/scala/InterpreterTest.scala)
+[debug] 	binary dep: Set()
+[debug] 	external source: Set()
+[debug] All initially invalidated classes: Set(InterpreterTest)
+[debug] All initially invalidated sources:Set(${BASE}/src/test/scala/InterpreterTest.scala)
+[debug] Initial set of included nodes: InterpreterTest
+[debug] compilation cycle 1
+[info] compiling 1 Scala source to C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\test-classes ...
+[debug] Returning already retrieved and compiled bridge: C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-sbt-bridge\3.3.0\scala3-sbt-bridge-3.3.0.jar.
+[debug] [zinc] Running cached compiler 7fbcbcf1 for Scala Compiler version 3.3.0
+[debug] [zinc] The Scala compiler is invoked with:
+[debug] 	-bootclasspath
+[debug] 	C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-library_3\3.3.0\scala3-library_3-3.3.0.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.13.10\scala-library-2.13.10.jar
+[debug] 	-classpath
+[debug] 	C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\test-classes;C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\classes;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalactic\scalactic_3\3.2.16\scalactic_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest_3\3.2.16\scalatest_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-core_3\3.2.16\scalatest-core_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-featurespec_3\3.2.16\scalatest-featurespec_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-flatspec_3\3.2.16\scalatest-flatspec_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-freespec_3\3.2.16\scalatest-freespec_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-funsuite_3\3.2.16\scalatest-funsuite_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-funspec_3\3.2.16\scalatest-funspec_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-propspec_3\3.2.16\scalatest-propspec_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-refspec_3\3.2.16\scalatest-refspec_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-wordspec_3\3.2.16\scalatest-wordspec_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-diagrams_3\3.2.16\scalatest-diagrams_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-matchers-core_3\3.2.16\scalatest-matchers-core_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-shouldmatchers_3\3.2.16\scalatest-shouldmatchers_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-mustmatchers_3\3.2.16\scalatest-mustmatchers_3-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalatest\scalatest-compatible\3.2.16\scalatest-compatible-3.2.16.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\modules\scala-xml_3\2.1.0\scala-xml_3-2.1.0.jar
+[debug] Scala compilation took 2.2527128 s
+[info] done compiling
+[debug] Invalidating (transitively) by inheritance from InterpreterTest...
+[debug] Initial set of included nodes: InterpreterTest
+[debug] Invalidated by transitive inheritance dependency: Set(InterpreterTest)
+[debug] Change NamesChange(InterpreterTest,ModifiedNames(changes = UsedName(assertTypeError,[Default]), UsedName(assertDoesNotCompile,[Default]), UsedName(assertCompiles,[Default]))) invalidates 1 classes due to The InterpreterTest has the following regular definitions changed:
+[debug] 	UsedName(assertTypeError,[Default]), UsedName(assertDoesNotCompile,[Default]), UsedName(assertCompiles,[Default]).
+[debug]   > by transitive inheritance: Set(InterpreterTest)
+[debug]   > 
+[debug]   > 
+[debug]         
+[debug] New invalidations:
+[debug] Initial set of included nodes: 
+[debug] Previously invalidated, but (transitively) depend on new invalidations:
+[debug] Final step, transitive dependencies:
+[debug] 	Set()
+[debug] No classes were invalidated.

@@ -1,0 +1,76 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(test, Some(de986b6b-9b9f-4c38-9e96-9832e778c924), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Test / test[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 4 Scala sources to C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\test-classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mExprTest:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- AST Printing Test 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mScannerTest:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Test Scanner Basic Test 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Test Scanner Basic Test 2[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Test Scanner Multi Line Comment[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mParserTest:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Parser Test Basic 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Parser Test Basic Fail 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Parser Test Basic Fail 2[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Scan-Parse Integration Test 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Scan-Parse Integration Test 2[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Scan-Parse Integration Test 3[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Scan-Parser Integration Test 4: Ternary Operator[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Scan-Parser Integration Test 5: Ternary Operator[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Scan-Parser Integration Test 6: Variable[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mInterpreterTest:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test Expressions 1[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test Expressions 2: Comma[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test Expressions 3: Ternary Operator[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test Expressions 4: Ternary Operator[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test Expressions 5: String[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test Expressions 6: Equality Comparison[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test Expressions 7: Ordered Comparison[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test Divide By 0[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test Compare Mismatch[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 8: Ordered Comparison[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 9: Variable Declaration[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 10: Variable Assignment[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 11: Variable Use Before Definition[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 12: Variable Use Before Initialization[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 13: Variable Assignment + Ternary Operator[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 14: If Conditional[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 14.1: If Conditional[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 15: Logical Or[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 15.1: Logical Or[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 16: Logical And[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 17: For Loop[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 18: While Loop[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 19: While Loop with Break[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 19.1: While Loop with Break[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 20: While Loop with Continue[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 21: Calling Native Functions[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 22: Declaring and Using Functions[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 23: Recursive Functions[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 24: Closures[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 25: Lambda Functions[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 25.1: Lambda Functions[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 25.2: Lambda Functions[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 25.3: Lambda Functions[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 25.4: Lambda Functions[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 26: Properly Closed Functions[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 27: Unused Local Variable[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 28: Return From Top Level[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 28.1: Continue From Top Level[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 28.2: Break From Top Level[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 29: Class Fields Getting and Setting[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Interpreter Test 29.1: Try to get unset field[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m- Interpreter Test 30: Calling a method *** FAILED ***[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  lox.Lox.hadRuntimeError was true (InterpreterTest.scala:497)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[36mRun completed in 360 milliseconds.[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[36mTotal number of tests run: 55[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[36mSuites: completed 4, aborted 0[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[36mTests: succeeded 54, failed 1, canceled 0, ignored 0, pending 0[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m*** 1 TEST FAILED ***[0m[0m
+[0m[[0m[31merror[0m] [0m[0mFailed tests:[0m
+[0m[[0m[31merror[0m] [0m[0m	InterpreterTest[0m
+[0m[[0m[0mdebug[0m] [0m[0mForcing garbage collection...[0m
+[0m[[0m[31merror[0m] [0m[0m(Test / [31mtest[0m) sbt.TestsFailedException: Tests unsuccessful[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 3 s, completed Jul 12, 2023, 11:47:35 AM[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m

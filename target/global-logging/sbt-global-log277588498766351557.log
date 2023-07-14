@@ -1,0 +1,78 @@
+[debug] > Exec(test, None, None)
+[debug] Evaluating tasks: Test / test
+[debug] Running task... Cancel: Signal, check cycles: false, forcegc: true
+[info] compiling 1 Scala source to C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\classes ...
+[info] done compiling
+[info] compiling 1 Scala source to C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\test-classes ...
+[info] done compiling
+[info] ScannerTest:
+[info] - Test Scanner Basic Test 1
+[info] - Test Scanner Basic Test 2
+[info] - Test Scanner Multi Line Comment
+[info] ExprTest:
+[info] - AST Printing Test 1
+[info] ParserTest:
+[info] - Parser Test Basic 1
+[info] - Parser Test Basic Fail 1
+[info] - Parser Test Basic Fail 2
+[info] - Scan-Parse Integration Test 1
+[info] - Scan-Parse Integration Test 2
+[info] - Scan-Parse Integration Test 3
+[info] - Scan-Parser Integration Test 4: Ternary Operator
+[info] - Scan-Parser Integration Test 5: Ternary Operator
+[info] - Scan-Parser Integration Test 6: Variable
+[info] InterpreterTest:
+[info] - Interpreter Test Expressions 1
+[info] - Interpreter Test Expressions 2: Comma
+[info] - Interpreter Test Expressions 3: Ternary Operator
+[info] - Interpreter Test Expressions 4: Ternary Operator
+[info] - Interpreter Test Expressions 5: String
+[info] - Interpreter Test Expressions 6: Equality Comparison
+[info] - Interpreter Test Expressions 7: Ordered Comparison
+[info] - Interpreter Test Divide By 0
+[info] - Interpreter Test Compare Mismatch
+[info] - Interpreter Test 8: Ordered Comparison
+[info] - Interpreter Test 9: Variable Declaration
+[info] - Interpreter Test 10: Variable Assignment
+[info] - Interpreter Test 11: Variable Use Before Definition
+[info] - Interpreter Test 12: Variable Use Before Initialization
+[info] - Interpreter Test 13: Variable Assignment + Ternary Operator
+[info] - Interpreter Test 14: If Conditional
+[info] - Interpreter Test 14.1: If Conditional
+[info] - Interpreter Test 15: Logical Or
+[info] - Interpreter Test 15.1: Logical Or
+[info] - Interpreter Test 16: Logical And
+[info] - Interpreter Test 17: For Loop
+[info] - Interpreter Test 18: While Loop
+[info] - Interpreter Test 19: While Loop with Break
+[info] - Interpreter Test 19.1: While Loop with Break
+[info] - Interpreter Test 20: While Loop with Continue
+[info] - Interpreter Test 21: Calling Native Functions
+[info] - Interpreter Test 22: Declaring and Using Functions
+[info] - Interpreter Test 23: Recursive Functions
+[info] - Interpreter Test 24: Closures
+[info] - Interpreter Test 25: Lambda Functions
+[info] - Interpreter Test 25.1: Lambda Functions
+[info] - Interpreter Test 25.2: Lambda Functions
+[info] - Interpreter Test 25.3: Lambda Functions
+[info] - Interpreter Test 25.4: Lambda Functions
+[info] - Interpreter Test 26: Properly Closed Functions
+[info] - Interpreter Test 27: Unused Local Variable
+[info] - Interpreter Test 28: Return From Top Level
+[info] - Interpreter Test 28.1: Continue From Top Level
+[info] - Interpreter Test 28.2: Break From Top Level
+[info] - Interpreter Test 29: Class Fields Getting and Setting
+[info] - Interpreter Test 29.1: Try to get unset field
+[info] - Interpreter Test 30: Calling a method
+[info] - Interpreter Test 31: Calling a method with 'this' keyword
+[info] - Interpreter Test 32: Class with initializer
+[info] - Interpreter Test 33: Class with Getter
+[info] - Interpreter Test 34: Inheriting a method from superclass.
+[info] - Interpreter Test 34: Overriding with Super..
+[info] Run completed in 466 milliseconds.
+[info] Total number of tests run: 60
+[info] Suites: completed 4, aborted 0
+[info] Tests: succeeded 60, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 4 s, completed Jul 14, 2023, 11:55:02 AM
+[debug] > Exec(idea-shell, None, None)

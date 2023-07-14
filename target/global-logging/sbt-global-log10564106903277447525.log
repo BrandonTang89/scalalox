@@ -1,0 +1,8 @@
+[debug] > Exec(run, None, None)
+[debug] Evaluating tasks: Compile / run
+[debug] Running task... Cancel: Signal, check cycles: false, forcegc: true
+[warn] Canceling execution...
+[error] Cancelled: run
+[error] Cancelled: run
+[error] Use 'last' for the full log.
+[debug] > Exec(idea-shell, None, None)

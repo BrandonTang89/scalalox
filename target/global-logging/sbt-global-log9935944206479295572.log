@@ -1,0 +1,5 @@
+[debug] > Exec(run src/test/SampleLox10.lox, None, None)
+[debug] Evaluating tasks: Compile / run
+[debug] Running task... Cancel: Signal, check cycles: false, forcegc: true
+[info] compiling 1 Scala source to C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\classes ...
+[info] done compiling
