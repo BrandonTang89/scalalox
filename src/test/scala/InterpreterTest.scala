@@ -551,4 +551,38 @@ class InterpreterTest extends AnyFunSuite {
     assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == 48)
   }
 
+  test("Interpreter Test 34: Inheriting a method from superclass.") {
+    val text: String = "class Doughnut {cook() {return \"Fry until golden brown.\";}}" +
+      "class BostonCream < Doughnut {}" +
+      "var a = BostonCream().cook();"
+    Lox.hadError = false
+    Lox.hadRuntimeError = false
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(!Lox.hadError)
+    assert(!Lox.hadRuntimeError)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == "Fry until golden brown.")
+  }
+
+  test("Interpreter Test 34: Overriding with Super..") {
+    val text: String = "class Doughnut {cook() {return \"Fry until golden brown.\";}}" +
+      "class BostonCream < Doughnut {cook() {return super.cook() + \"Pipe full of custard and coat with chocolate.\"; }}" +
+      "var a = BostonCream().cook();"
+    Lox.hadError = false
+    Lox.hadRuntimeError = false
+    val parser: Parser = Parser(Scanner(text).scanTokens())
+    val statements = parser.parse()
+    val interpreter: Interpreter = Interpreter()
+    val resolver: Resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    interpreter.interpret(statements)
+    assert(!Lox.hadError)
+    assert(!Lox.hadRuntimeError)
+    assert(interpreter.environment.get(Token(IDENTIFIER, "a", null, 1)) == "Fry until golden brown.Pipe full of custard and coat with chocolate.")
+  }
+
 }

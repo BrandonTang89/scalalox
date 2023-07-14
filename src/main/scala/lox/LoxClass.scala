@@ -2,7 +2,7 @@ package lox
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable
 
-class LoxClass(val name: String, val methods: mutable.Map[String, LoxFunction]) extends LoxCallable {
+class LoxClass(val name: String, val superclass: LoxClass, val methods: mutable.Map[String, LoxFunction]) extends LoxCallable {
 
 
   override def toString: String = name
@@ -22,5 +22,8 @@ class LoxClass(val name: String, val methods: mutable.Map[String, LoxFunction]) 
       case None =>
 
     instance
-  def findMethod(name: String): Option[LoxFunction] = methods.get(name)
+  def findMethod(name: String): Option[LoxFunction] =
+    if methods.contains(name) then methods.get(name)
+    else if superclass != null then superclass.findMethod(name)
+    else None
 }

@@ -26,6 +26,7 @@ class Interpreter{
       case Variable(n, i) => locals.put(i, depth)
       case Assign(n, v, i) => locals.put(i, depth)
       case This(k, i) => locals.put(i, depth)
+      case Super(k, m, i) => locals.put(i, depth)
   }
 
   def interpret(statements: ArrayBuffer[Stmt]): Unit = {
@@ -52,7 +53,18 @@ class Interpreter{
       case stmt: Class => visitClassStmt(stmt)
   }
   private def visitClassStmt(stmt: Class): Unit = {
+    var superclass: Any = null
+    stmt.superclass match
+      case Some(sc) =>
+        superclass = evaluate(sc)
+        if !superclass.isInstanceOf[LoxClass] then
+          throw RuntimeError(sc.name, "Superclass must be a class.")
+      case None =>
+
     environment.define(stmt.name.lexeme, null) // define first
+    if stmt.superclass.isDefined then
+      environment = Environment(environment) // wrap a new environment
+      environment.define("super", superclass)
 
     val methods: mutable.Map[String, LoxFunction] = mutable.Map[String, LoxFunction]()
     for (method <- stmt.methods) do
@@ -60,7 +72,8 @@ class Interpreter{
         environment, method.name.lexeme.equals("init"))
       methods(method.name.lexeme) = function
 
-    val klass: LoxClass = LoxClass(stmt.name.lexeme, methods) // allow for self-reference
+    val klass: LoxClass = LoxClass(stmt.name.lexeme, superclass.asInstanceOf[LoxClass], methods) // allow for self-reference
+    if stmt.superclass.isDefined then environment = environment.enclosing
     environment.assign(stmt.name, klass)
   }
   private def visitBlockStmt(stmt: Block): Unit = {
@@ -134,6 +147,7 @@ class Interpreter{
       case expr: Get => visitGetExpr(expr)
       case expr: Set => visitSetExpr(expr)
       case expr: This => visitThisExpr(expr)
+      case expr: Super => visitSuperExpr(expr)
   }
 
   private def visitLambdaExpr(expr: Lambda): Any = {
@@ -259,6 +273,16 @@ class Interpreter{
 
   private def visitThisExpr(expr: This): Any = {
     lookUpVariable(expr.keyword, expr)
+  }
+
+  private def visitSuperExpr(expr: Super): Any = {
+    val distance: Int = locals(expr.index)
+    val superclass: LoxClass = environment.getAt(distance, expr.keyword).asInstanceOf[LoxClass]
+    val loxObject: LoxInstance = environment.getAt(distance - 1, Token(THIS, "this", null, -1)).asInstanceOf[LoxInstance]
+    val method: Option[LoxFunction] = superclass.findMethod(expr.method.lexeme) // recursively goes upwards
+    if method.isEmpty then
+      throw RuntimeError(expr.method, "Undefined property '" + expr.method.lexeme + "'.")
+    else method.get.bind(loxObject)
   }
 
   private def visitVariableExpr(expr: Variable): Any = lookUpVariable(expr.name, expr)

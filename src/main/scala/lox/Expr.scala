@@ -38,4 +38,5 @@ case class Get(loxObject: Expr, name: Token) extends Expr
 class LookUpable(val index: Int) extends Expr
 case class Variable(name: Token, i: Int) extends LookUpable(i) // index for resolution
 case class Set(loxObject: Expr, name:Token, value: Expr) extends Expr
+case class Super(keyword: Token, method: Token, index: Int) extends Expr
 case class This(keyword: Token, i: Int) extends LookUpable(i) // index for resolution

@@ -66,9 +66,15 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
   }
 
   /** Class Declaration
-   *  classDecl → "class" IDENTIFIER "{" function* "}"; */
+   *  classDecl → "class" IDENTIFIER ("<" IDENTIFIER)? {" function* "}"; */
   private def classDeclaration(): Stmt = {
     val name: Token = consume(IDENTIFIER, "Expect class name.")
+
+    var superclass: Option[Variable] = None
+    if matches(LESS) then
+      consume(IDENTIFIER, "Expect superclass name.")
+      index += 1
+      superclass = Some(Variable(previous(), index-1))
     consume(LEFT_BRACE, "Expect '{' before class body.")
     val methods: ArrayBuffer[Var] = ArrayBuffer[Var]()
 
@@ -77,7 +83,7 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
       methods.addOne(fn)
 
     consume(RIGHT_BRACE, "Expect '}' after class body.")
-    Class(name, methods)
+    Class(name, superclass, methods)
   }
 
   /** Fun Declaration
@@ -413,12 +419,20 @@ class Parser(val tokens: ArrayBuffer[Token], val parseExpressions: Boolean = fal
   }
 
   /** Primary Grammar
-   * primary → NUMBER | STRING | "true" | "false" | "nil" |"(" expression ")" | IDENTIFIER | lambda; */
+   * primary → NUMBER | STRING | "true" | "false" | "nil" |"(" expression ")" | IDENTIFIER | lambda
+   * | "super" "." IDENTIFIER; */
   private def primary(): Expr = {
     if matches(FALSE) then Literal(false)
     else if matches(TRUE) then Literal(true)
     else if matches(NIL) then Literal(null)
     else if matches(NUMBER, STRING) then Literal(previous().literal)
+    else if matches(SUPER) then
+      val keyword: Token = previous()
+      consume(DOT, "Expect '.' after 'super'.")
+      val method: Token = consume(IDENTIFIER, "Expect superclass method name.")
+      index += 1
+      Super(keyword, method, index-1)
+
     else if matches(THIS) then
       index += 1
       This(previous(), index-1)

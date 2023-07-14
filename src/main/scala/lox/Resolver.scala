@@ -43,6 +43,7 @@ class Resolver(val interpreter: Interpreter) {
       case expr: Get => visitGetExpr(expr)
       case expr: Set => visitSetExpr(expr)
       case expr: This => visitThisExpr(expr)
+      case expr: Super => visitSuperExpr(expr)
 
   // Interesting Visits
   private def beginScope(): Unit =
@@ -111,6 +112,24 @@ class Resolver(val interpreter: Interpreter) {
     declare(stmt.name)
     define(stmt.name)
 
+    stmt.superclass match
+      case Some(superclass) =>
+        if stmt.name.lexeme == superclass.name.lexeme then
+          Lox.error(superclass.name, "A class can't inherit from itself.")
+      case None =>
+
+    stmt.superclass match
+      case Some(superclass) =>
+        currentClass = ClassType.SUBCLASS
+        resolve(superclass)
+      case None =>
+
+    stmt.superclass match
+      case Some(superclass) =>
+        beginScope()
+        scopes.head("super") = (null, localVarStatus.USED)
+      case None =>
+
     beginScope()
     scopes.head("this") = (null, localVarStatus.USED) // used by default
     for (method <- stmt.methods) do
@@ -120,7 +139,15 @@ class Resolver(val interpreter: Interpreter) {
       resolveFunction(method.initializer.get.asInstanceOf[Lambda], FunctionType.METHOD)
 
     endScope()
+    if stmt.superclass.isDefined then endScope()
     currentClass = enclosingClass
+
+  private def visitSuperExpr(expr: Super): Unit =
+    if currentClass == ClassType.NONE then
+      Lox.error(expr.keyword, "Can't use 'super' outside of a class.")
+    else if currentClass != ClassType.SUBCLASS then
+      Lox.error(expr.keyword, "Can't use 'super' in class with no subclass.")
+    resolveLocal(expr, expr.keyword)
 
   // Uninteresting Visits
   private def visitExpressionStmt(stmt: Expression): Unit = resolve(stmt.expression)
@@ -185,7 +212,7 @@ object Resolver{
   enum FunctionType:
     case NONE, FUNCTION, METHOD, INITIALIZER
   enum ClassType:
-    case NONE, CLASS
+    case NONE, CLASS, SUBCLASS
   enum LoopType:
     case NONE, WHILE
 }
