@@ -293,19 +293,6 @@ class Interpreter{
       case None => globals.get(name)
       case Some(d) => environment.getAt(d, name)
   }
-  /*
-  private def lookUpVariable(name: Token, expr: Variable): Any = {
-    val dist: Option[Int] = locals.get(expr.index)
-    dist match
-      case None => globals.get(name)
-      case Some(d) => environment.getAt(d, name)
-  }
-  private def lookUpVariable(name: Token, expr: This): Any = {
-    val dist: Option[Int] = locals.get(expr.index)
-    dist match
-      case None => globals.get(name)
-      case Some(d) => environment.getAt(d, name)
-  }*/
 
   // Helper Functions
   private def isTruthy(obj: Any): Boolean = {
