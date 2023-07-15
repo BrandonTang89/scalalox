@@ -1,11 +1,17 @@
-[debug] Created transactional ClassFileManager with tempDir = C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\test-classes.bak
-[debug] About to delete class files:
-[debug] 	InterpreterTest.class
-[debug] 	InterpreterTest.tasty
-[debug] We backup class files:
-[debug] 	InterpreterTest.class
-[debug] 	InterpreterTest.tasty
-[debug] Registering generated classes:
-[debug] 	InterpreterTest.class
-[debug] 	InterpreterTest.tasty
-[debug] Removing the temporary directory used for backing up class files: C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\test-classes.bak
+[0m[[0m[0mdebug[0m] [0m[0mCreated transactional ClassFileManager with tempDir = C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\test-classes.bak[0m
+[0m[[0m[0mdebug[0m] [0m[0mAbout to delete class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ExprTest.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ParserTest.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ExprTest.tasty[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ParserTest.tasty[0m
+[0m[[0m[0mdebug[0m] [0m[0mWe backup class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ExprTest.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ParserTest.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ExprTest.tasty[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ParserTest.tasty[0m
+[0m[[0m[0mdebug[0m] [0m[0mRegistering generated classes:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ParserTest.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ExprTest.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ParserTest.tasty[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ExprTest.tasty[0m
+[0m[[0m[0mdebug[0m] [0m[0mRemoving the temporary directory used for backing up class files: C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\test-classes.bak[0m

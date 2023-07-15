@@ -2,6 +2,19 @@ package lox
 import collection.mutable.ArrayBuffer
 
 trait Expr{
+
+  // Pretty Printing for Debugging
+  override def toString: String = { // incomplete, not actually necessary for much.
+    this match
+      case Assign(n, v, i) => parenthesize("assignment " + n.lexeme, v)
+      case Binary(l, o, r) => parenthesize(o.lexeme, l, r)
+      case Grouping(e) => parenthesize("group", e)
+      case Literal(v) => if v == null then "nil" else v.toString
+      case Logical(l, o, r) => parenthesize(o.lexeme, l, r)
+      case Ternary(l, o1, m, o2, r) => parenthesize(o1.lexeme + o2.lexeme, l, m, r)
+      case Unary(o, r) => parenthesize(o.lexeme, r)
+      case Variable(n, i) => n.lexeme
+  }
   private def parenthesize(name: String, expressions: Expr*): String = {
     val sb: StringBuilder = StringBuilder("(").append(name)
     for expr <- expressions do

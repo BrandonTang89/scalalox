@@ -2,5 +2,345 @@
 [0m[[0m[0mdebug[0m] [0m[0mIncrementalCompile.incrementalCompile[0m
 [0m[[0m[0mdebug[0m] [0m[0mprevious = Stamps for: 94 products, 16 sources, 2 libraries[0m
 [0m[[0m[0mdebug[0m] [0m[0mcurrent source = Set(${BASE}/src/main/scala/lox/LoxCallable.scala, ${BASE}/src/main/scala/lox/Expr.scala, ${BASE}/src/main/scala/lox/LoxClass.scala, ${BASE}/src/main/scala/lox/TokenType.scala, ${BASE}/src/main/scala/lox/Token.scala, ${BASE}/src/main/scala/lox/Interpreter.scala, ${BASE}/src/main/scala/lox/Scanner.scala, ${BASE}/src/main/scala/lox/Resolver.scala, ${BASE}/src/main/scala/lox/LoxFunction.scala, ${BASE}/src/main/scala/lox/RuntimeError.scala, ${BASE}/src/main/scala/lox/Stmt.scala, ${BASE}/src/main/scala/lox/Lox.scala, ${BASE}/src/main/scala/lox/Environment.scala, ${BASE}/src/main/scala/lox/ReturnException.scala, ${BASE}/src/main/scala/lox/Parser.scala, ${BASE}/src/main/scala/lox/LoxInstance.scala)[0m
-[0m[[0m[0mdebug[0m] [0m[0m> initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(), unmodified = ...),Set(),Set(),API Changes: Set())[0m
-[0m[[0m[0mdebug[0m] [0m[0mNo changes[0m
+[0m[[0m[0mdebug[0m] [0m[0m> initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(${BASE}/src/main/scala/lox/Expr.scala), unmodified = ...),Set(),Set(),API Changes: Set())[0m
+[0m[[0m[0mdebug[0m] [0m[0m[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial source changes:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	removed: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	added: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	modified: Set(${BASE}/src/main/scala/lox/Expr.scala)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated products: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mExternal API changes: API Changes: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mModified binary dependencies: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial directly invalidated classes: Set(lox.Get, lox.Super, lox.Expr, lox.Set, lox.This, lox.Logical, lox.Grouping, lox.Call, lox.LookUpable, lox.Variable, lox.Assign, lox.Unary, lox.Literal, lox.Lambda, lox.Binary, lox.Ternary)[0m
+[0m[[0m[0mdebug[0m] [0m[0mSources indirectly invalidated by:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	product: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	binary dep: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	external source: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated classes: Set(lox.Get, lox.Super, lox.Expr, lox.Set, lox.This, lox.Logical, lox.Grouping, lox.Call, lox.LookUpable, lox.Variable, lox.Assign, lox.Unary, lox.Literal, lox.Lambda, lox.Binary, lox.Ternary)[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated sources:Set(${BASE}/src/main/scala/lox/Expr.scala)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Get, lox.Super, lox.Expr, lox.Set, lox.This, lox.Logical, lox.Grouping, lox.Call, lox.LookUpable, lox.Variable, lox.Assign, lox.Unary, lox.Literal, lox.Lambda, lox.Binary, lox.Ternary[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Set by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Logical by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Grouping by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Call by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.LookUpable by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.This by lox.LookUpable[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Variable by lox.LookUpable[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Assign by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Unary by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Literal by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Lambda by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Binary by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Ternary by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mcompilation cycle 1[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\classes ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mReturning already retrieved and compiled bridge: C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-sbt-bridge\3.3.0\scala3-sbt-bridge-3.3.0.jar.[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 658dde46 for Scala Compiler version 3.3.0[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-library_3\3.3.0\scala3-library_3-3.3.0.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.13.10\scala-library-2.13.10.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-classpath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\classes;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalactic\scalactic_3\3.2.16\scalactic_3-3.2.16.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 4.454432 s[0m
+[0m[[0m[0mdebug[0m] [0m[0mdone compiling[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Logical...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Logical[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Logical)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Logical,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Logical has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Logical)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Grouping...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Grouping[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Grouping)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Grouping,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Grouping has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Grouping)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Get...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Get[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Get)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Get,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Get has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Get)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Assign...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Assign[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Assign)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Assign,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Assign has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Assign)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Set...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Set[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Set)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Set,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Set has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Set)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.LookUpable...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.LookUpable[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.This by lox.LookUpable[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Variable by lox.LookUpable[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.LookUpable, lox.Variable, lox.This)[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Class. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.LookUpable,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 4 classes due to The lox.LookUpable has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.LookUpable, lox.Variable, lox.This)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Variable...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Variable[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Variable)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Class. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Variable,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Variable has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Variable)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Expr...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Get by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Super by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Set by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Logical by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Grouping by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Call by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.LookUpable by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.This by lox.LookUpable[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Variable by lox.LookUpable[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Assign by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Unary by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Literal by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Lambda by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Binary by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Ternary by lox.Expr[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Get, lox.Super, lox.Expr, lox.Set, lox.This, lox.Logical, lox.Grouping, lox.Call, lox.LookUpable, lox.Variable, lox.Assign, lox.Unary, lox.Literal, lox.Lambda, lox.Binary, lox.Ternary)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Expression. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Print. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Return. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Var. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.If. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.While. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Class. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.LoxInstance. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.LoxFunction. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Expr,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 17 classes due to The lox.Expr has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Get, lox.Super, lox.Expr, lox.Set, lox.This, lox.Logical, lox.Grouping, lox.Call, lox.LookUpable, lox.Variable, lox.Assign, lox.Unary, lox.Literal, lox.Lambda, lox.Binary, lox.Ternary)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Binary...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Binary[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Binary)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Binary,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Binary has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Binary)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Ternary...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Ternary[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Ternary)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Ternary,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Ternary has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Ternary)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.This...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.This[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.This)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.This,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.This has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.This)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Lambda...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Lambda[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Lambda)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.LoxInstance. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.LoxFunction. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Lambda,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Lambda has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Lambda)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Super...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Super[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Super)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Super,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Super has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Super)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Unary...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Unary[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Unary)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Unary,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Unary has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Unary)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Literal...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Literal[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Literal)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Literal,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Literal has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Literal)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from lox.Call...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Call[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(lox.Call)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Resolver. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of lox.Interpreter: [UsedName(toString,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of lox.Parser. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(lox.Call,ModifiedNames(changes = UsedName(toString,[Default]))) invalidates 2 classes due to The lox.Call has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(toString,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(lox.Call)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mNew invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	lox.Interpreter[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Interpreter[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Resolver by lox.Interpreter[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Lox by lox.Resolver[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Scanner by lox.Lox[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.Parser by lox.Lox[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.LoxInstance by lox.Interpreter[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.LoxClass by lox.LoxInstance[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.LoxFunction by lox.LoxInstance[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding lox.LoxCallable by lox.Interpreter[0m
+[0m[[0m[0mdebug[0m] [0m[0mPreviously invalidated, but (transitively) depend on new invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0mFinal step, transitive dependencies:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Set(lox.Interpreter)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: lox.Interpreter$.loopContinueException, lox.Interpreter, lox.Interpreter$.loopBreakException[0m
+[0m[[0m[0mdebug[0m] [0m[0mcompilation cycle 2[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\classes ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mReturning already retrieved and compiled bridge: C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-sbt-bridge\3.3.0\scala3-sbt-bridge-3.3.0.jar.[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 310a7138 for Scala Compiler version 3.3.0[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-library_3\3.3.0\scala3-library_3-3.3.0.jar;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.13.10\scala-library-2.13.10.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-classpath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	C:\Users\tangy\IdeaProjects\scalalox\target\scala-3.3.0\classes;C:\Users\tangy\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scalactic\scalactic_3\3.2.16\scalactic_3-3.2.16.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 1.4868317 s[0m
+[0m[[0m[0mdebug[0m] [0m[0mdone compiling[0m
+[0m[[0m[0mdebug[0m] [0m[0mNew invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: [0m
+[0m[[0m[0mdebug[0m] [0m[0mPreviously invalidated, but (transitively) depend on new invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0mFinal step, transitive dependencies:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mNo classes were invalidated.[0m
